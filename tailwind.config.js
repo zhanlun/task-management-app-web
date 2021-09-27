@@ -5,6 +5,9 @@ module.exports = {
     extend: {
       backgroundImage: {
         'sprinkle-pattern': "url('./img/Sprinkle.svg')",
+      },
+      fontFamily: {
+        nunito: ['Nunito']
       }
     },
   },

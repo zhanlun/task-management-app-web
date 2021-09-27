@@ -15,6 +15,8 @@ export const NewBoard = ({ isOpen, setIsOpen }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    if (!name.trim()) return
+
     dispatch(createBoard({
       name
     }))
@@ -65,12 +67,12 @@ export const NewBoard = ({ isOpen, setIsOpen }) => {
                 <TextInput placeholder="Board title" value={name} onChange={handleChange} />
 
                 <Button type="submit"
-                  className="bg-blue-900">
+                  className="bg-indigo-500">
                   Create board
                 </Button>
                 <Button type="button"
                   onClick={() => setIsOpen(false)}
-                  className="bg-pink-900">
+                  className="bg-pink-500">
                   Cancel
                 </Button>
               </form>

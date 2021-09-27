@@ -1,64 +1,55 @@
-import { Menu, Transition } from '@headlessui/react'
-import React, { Fragment, useState } from 'react'
+import { Menu, Popover, Transition } from '@headlessui/react'
+import React, { useState, Fragment, useRef } from 'react'
+import { DotsHorizontalIcon, PencilIcon, TrashIcon } from '@heroicons/react/solid'
 
 export const Board = ({ board, updateBoard, deleteBoard }) => {
-  const [zIndex, setZIndex] = useState('z-0')
+  const menuRef = useRef(null)
 
-  const handleMenu = (e) => {
-    e.preventDefault();
-
-    // TODO
-    // use headless menu drop down for edit and delete
-
-    // TODO switch to overlay
-
+  const handleRightClick = (e) => {
+    e.preventDefault()
+    menuRef.current.click()
   }
-
   return (
     <div
-      onContextMenu={handleMenu} className={zIndex + " relative bg-yellow-500 shadow-lg rounded-lg p-12 text-center hover:bg-opacity-80 duration-100"}>
-      <p className="font-bold text-white tracking-wider">
+      onContextMenu={handleRightClick}
+      className={"bg-yellow-500 shadow-lg rounded-lg pt-6  pr-0 pb-0 text-center hover:bg-opacity-80 duration-100 select-none"}>
+      <p className="font-bold text-white tracking-wider py-6">
         {board.name}
       </p>
-      <button type="button" onClick={handleMenu}>
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 absolute right-4 top-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-        </svg>
-      </button>
-      <div className="absolute right-2 bottom-2"
-        onMouseEnter={() => setZIndex('z-50')}
-        onMouseLeave={() => setZIndex('z-0')}
-      >
-        <BoardDropDownMenu id={board.id} setZIndex={setZIndex} />
-      </div>
+
+      <BoardDropDownMenu menuRef={menuRef} id={board.id} />
     </div >
   )
 }
 
-const BoardDropDownMenu = ({ id, setZIndex }) => {
+const BoardDropDownMenu = ({ id, menuRef }) => {
   return (
-    <div className="w-56 text-right"
+    <div className="w-full text-right "
     >
       <Menu as="div" className="relative inline-block text-left"
       >
-        <>
-          <div>
-            <Menu.Button
-              className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-              Options
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </Menu.Button>
-          </div>
+        <Menu.Button
+          ref={menuRef}
+          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-gray-200 rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+          <DotsHorizontalIcon className="w-6 h-6" />
+        </Menu.Button>
+        <Transition
+          enter="transition duration-100 ease-out"
+          enterFrom="transform scale-95 opacity-0"
+          enterTo="transform scale-100 opacity-100"
+          leave="transition duration-75 ease-out"
+          leaveFrom="transform scale-100 opacity-100"
+          leaveTo="transform scale-95 opacity-0"
+        >
           <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="px-1 py-1 ">
               <Menu.Item>
                 {({ active }) => (
                   <button
                     className={`${active ? 'bg-indigo-500 text-white' : 'text-gray-900'
-                      } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                      } flex rounded-md items-center w-full px-2 py-2 text-sm`}
                   >
+                    <PencilIcon className="w-6 h-6 mr-2" />
                     Edit
                   </button>
                 )}
@@ -69,16 +60,16 @@ const BoardDropDownMenu = ({ id, setZIndex }) => {
                 {({ active }) => (
                   <button
                     className={`${active ? 'bg-indigo-500 text-white' : 'text-gray-900'
-                      } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                      } flex rounded-md items-center w-full px-2 py-2 text-sm`}
                   >
-
+                    <TrashIcon className="w-6 h-6 mr-2" />
                     Delete
                   </button>
                 )}
               </Menu.Item>
             </div>
           </Menu.Items>
-        </>
+        </Transition>
       </Menu>
     </div>
   )
