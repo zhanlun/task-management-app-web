@@ -21,10 +21,10 @@ export const Dashboard = () => {
 
   return (
     <div className="w-full mt-2 h-full flex flex-col mx-auto">
-      <div className="bg-gray-700 bg-opacity-50 w-full p-1 mx-auto flex-grow">
+      <div className="w-full p-1 mx-auto flex-grow">
         {
           board && (
-            <div>
+            <div className="h-full">
               <button
                 type="button"
                 onClick={(e) => {
@@ -38,8 +38,13 @@ export const Dashboard = () => {
                   {board.name}
                 </span>
               </button>
-              <div>
+              <div className="h-full flex flex-row flex-wrap justify-start gap-4">
                 {/* put lists and cards */}
+                <MyList />
+                <MyList />
+                <MyList />
+                <MyList />
+                <MyList />
                 <MyList />
               </div>
             </div>
@@ -98,7 +103,7 @@ const MyList = () => {
       <Droppable droppableId="list-id-1">
         {provided => (
           <div
-            className="max-w-xs flex flex-col gap-2 p-4 rounded bg-gray-500 bg-opacity-30"
+            className="flex-shrink-0 w-80 flex flex-col gap-2 p-4 rounded bg-gray-500 bg-opacity-50"
             ref={provided.innerRef}
             {...provided.droppableProps}>
             <ItemList items={items} />
