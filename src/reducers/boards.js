@@ -1,6 +1,6 @@
 import { CREATE, DELETE, GET_ALL, UPDATE } from "../constants/actionType/boards"
 
-export default (boards = [], action) => {
+const boardsReducer = (boards = [], action) => {
   switch (action.type) {
     case GET_ALL:
       return action.payload
@@ -15,3 +15,4 @@ export default (boards = [], action) => {
       return boards
   }
 }
+export default boardsReducer

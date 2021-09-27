@@ -16,7 +16,7 @@ export const createBoard = (board) => async (dispatch) => {
   try {
     const { data } = await api.createBoard(board)
 
-    dispatch({ type: CREATE, payload: data })
+    return dispatch({ type: CREATE, payload: data })
   } catch (error) {
     console.log(error)
   }

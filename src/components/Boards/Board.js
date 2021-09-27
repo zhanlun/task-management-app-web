@@ -1,18 +1,29 @@
-import { Menu, Popover, Transition } from '@headlessui/react'
-import React, { useState, Fragment, useRef } from 'react'
+import { Menu, Transition } from '@headlessui/react'
+import React, { useState, useRef } from 'react'
 import { DotsHorizontalIcon, PencilIcon, TrashIcon } from '@heroicons/react/solid'
 import { DeleteBoard } from './DeleteBoard'
 import { NewBoard } from './NewBoard'
+import { useHistory } from 'react-router'
 
-export const Board = ({ board, updateBoard, deleteBoard }) => {
+export const Board = ({ board }) => {
   const menuRef = useRef(null)
+  const history = useHistory()
 
   const handleRightClick = (e) => {
     e.preventDefault()
     menuRef.current.click()
   }
+
+  const handleRedirect = (e) => {
+    e.preventDefault()
+    if (e.target.tagName !== 'BUTTON') {
+      history.push(`/boards/${board.id}`)
+    }
+  }
+
   return (
     <div
+      onClick={handleRedirect}
       onContextMenu={handleRightClick}
       className={"bg-yellow-500 shadow-lg rounded-lg pt-6  pr-0 pb-0 text-center hover:bg-opacity-80 duration-100 select-none"}>
       <p className="font-bold text-white tracking-wider py-6">
@@ -51,7 +62,9 @@ const BoardDropDownMenu = ({ board, menuRef }) => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => {
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
                       setEditOpen(true)
                     }}
                     className={`${active ? 'bg-indigo-500 text-white' : 'text-gray-900'
@@ -67,7 +80,9 @@ const BoardDropDownMenu = ({ board, menuRef }) => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => {
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
                       setDeleteOpen(true)
                     }}
                     className={`${active ? 'bg-indigo-500 text-white' : 'text-gray-900'

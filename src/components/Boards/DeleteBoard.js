@@ -1,10 +1,8 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { TextInput } from '../Layout/TextInput'
 import { Button } from '../Layout/Button'
 import { useDispatch } from 'react-redux'
-import { createBoard, deleteBoard } from '../../actions/boards'
-import { Board } from './Board'
+import { deleteBoard } from '../../actions/boards'
 import { ExclamationCircleIcon } from '@heroicons/react/outline'
 
 export const DeleteBoard = ({ board, isOpen, setIsOpen }) => {

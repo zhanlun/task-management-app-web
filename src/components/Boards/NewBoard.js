@@ -4,41 +4,45 @@ import { TextInput } from '../Layout/TextInput'
 import { Button } from '../Layout/Button'
 import { useDispatch } from 'react-redux'
 import { createBoard, updateBoard } from '../../actions/boards'
+import { useHistory } from 'react-router'
 
 export const NewBoard = ({ board, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
-  const [name, setName] = useState('')
+  const history = useHistory()
+
+  const [name, setName] = useState(board ? board.name : '')
   const handleChange = (e) => {
     setName(e.target.value)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (!name.trim()) return
 
+    setIsOpen(false)
+    setName('')
+
     if (!board) {
-      dispatch(createBoard({
+      const { payload } = await dispatch(createBoard({
         name
       }))
+      history.push(`/boards/${payload.id}`)
     } else {
       dispatch(updateBoard(board.id, {
         name
       }))
     }
-    setIsOpen(false)
-    setName('')
   }
 
   useEffect(() => {
-    if (board) {
+    if (isOpen && board) {
       setName(board.name)
     }
-  }, [])
+  }, [isOpen, board])
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-
       <Dialog
         className="fixed z-10 inset-0 overflow-y-auto"
         onClose={() => setIsOpen(false)}
