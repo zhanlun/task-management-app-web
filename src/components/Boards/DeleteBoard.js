@@ -1,46 +1,25 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { TextInput } from '../Layout/TextInput'
 import { Button } from '../Layout/Button'
 import { useDispatch } from 'react-redux'
-import { createBoard, updateBoard } from '../../actions/boards'
+import { createBoard, deleteBoard } from '../../actions/boards'
+import { Board } from './Board'
+import { ExclamationCircleIcon } from '@heroicons/react/outline'
 
-export const NewBoard = ({ board, isOpen, setIsOpen }) => {
+export const DeleteBoard = ({ board, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
-  const [name, setName] = useState('')
-  const handleChange = (e) => {
-    setName(e.target.value)
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-
-    if (!name.trim()) return
-
-    if (!board) {
-      dispatch(createBoard({
-        name
-      }))
-    } else {
-      dispatch(updateBoard(board.id, {
-        name
-      }))
-    }
-    setIsOpen(false)
-    setName('')
+    dispatch(deleteBoard(board.id))
   }
-
-  useEffect(() => {
-    if (board) {
-      setName(board.name)
-    }
-  }, [])
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-
       <Dialog
         className="fixed z-10 inset-0 overflow-y-auto"
+        // open={isOpen}
         onClose={() => setIsOpen(false)}
       >
         <div className="flex items-center justify-center min-h-screen">
@@ -68,29 +47,26 @@ export const NewBoard = ({ board, isOpen, setIsOpen }) => {
               <Dialog.Title
                 className="font-bold text-lg flex gap-1 items-center"
               >
-                {
-                  board ?
-                    'Edit board title' :
-                    'Add board title'
-                }
+                <ExclamationCircleIcon className="w-6 h-6" />
+                Delete board
               </Dialog.Title>
 
-              {/* <Dialog.Description></Dialog.Description> */}
+              <Dialog.Description className="text-gray-800 my-2">
+                Are you sure that you want to delete this board titled&nbsp;
+                <span className="font-bold text-black">
+                  {board.name}
+                </span>
+                ?
+              </Dialog.Description>
 
               <form onSubmit={handleSubmit}>
-                <TextInput placeholder="Board title" value={name} onChange={handleChange} />
-
                 <Button type="submit"
                   className="bg-indigo-500">
-                  {
-                    board ?
-                      'Update board' :
-                      'Create board'
-                  }
+                  Confirm
                 </Button>
                 <Button type="button"
                   onClick={() => setIsOpen(false)}
-                  className="bg-pink-500">
+                  className="bg-red-500">
                   Cancel
                 </Button>
               </form>

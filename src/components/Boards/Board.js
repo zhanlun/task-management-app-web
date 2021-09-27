@@ -1,6 +1,8 @@
 import { Menu, Popover, Transition } from '@headlessui/react'
 import React, { useState, Fragment, useRef } from 'react'
 import { DotsHorizontalIcon, PencilIcon, TrashIcon } from '@heroicons/react/solid'
+import { DeleteBoard } from './DeleteBoard'
+import { NewBoard } from './NewBoard'
 
 export const Board = ({ board, updateBoard, deleteBoard }) => {
   const menuRef = useRef(null)
@@ -17,12 +19,15 @@ export const Board = ({ board, updateBoard, deleteBoard }) => {
         {board.name}
       </p>
 
-      <BoardDropDownMenu menuRef={menuRef} id={board.id} />
+      <BoardDropDownMenu menuRef={menuRef} board={board} />
     </div >
   )
 }
 
-const BoardDropDownMenu = ({ id, menuRef }) => {
+const BoardDropDownMenu = ({ board, menuRef }) => {
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
+
   return (
     <div className="w-full text-right "
     >
@@ -41,11 +46,14 @@ const BoardDropDownMenu = ({ id, menuRef }) => {
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-95 opacity-0"
         >
-          <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="absolute right-0 w-56 mt-1 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="px-1 py-1 ">
               <Menu.Item>
                 {({ active }) => (
                   <button
+                    onClick={() => {
+                      setEditOpen(true)
+                    }}
                     className={`${active ? 'bg-indigo-500 text-white' : 'text-gray-900'
                       } flex rounded-md items-center w-full px-2 py-2 text-sm`}
                   >
@@ -59,6 +67,9 @@ const BoardDropDownMenu = ({ id, menuRef }) => {
               <Menu.Item>
                 {({ active }) => (
                   <button
+                    onClick={() => {
+                      setDeleteOpen(true)
+                    }}
                     className={`${active ? 'bg-indigo-500 text-white' : 'text-gray-900'
                       } flex rounded-md items-center w-full px-2 py-2 text-sm`}
                   >
@@ -71,6 +82,9 @@ const BoardDropDownMenu = ({ id, menuRef }) => {
           </Menu.Items>
         </Transition>
       </Menu>
+
+      <NewBoard isOpen={editOpen} setIsOpen={setEditOpen} board={board} />
+      <DeleteBoard isOpen={deleteOpen} setIsOpen={setDeleteOpen} board={board} />
     </div>
   )
 }
