@@ -1,5 +1,5 @@
 import React from 'react'
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Draggable } from 'react-beautiful-dnd';
 
 export const Card = ({ card, index }) => {
   return (
@@ -11,10 +11,10 @@ export const Card = ({ card, index }) => {
             p-2 mb-3
             text-sm text-gray-600 tracking-wide
             select-none
-             rounded
+            rounded
             hover:bg-yellow-50
             ${snapshot.isDragging ?
-              'bg-yellow-100 shadow-lg' :
+              'bg-yellow-100 shadow-lg text-gray-800' :
               'bg-gray-50 shadow'
             }
             `

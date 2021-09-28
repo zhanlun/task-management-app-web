@@ -1,17 +1,18 @@
-import { Fragment, useEffect, useState } from 'react'
 import { Dialog } from '@headlessui/react'
-import { TextInput } from '../Layout/TextInput'
+import React, { Fragment, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router'
 import { Button } from '../Layout/Button'
-import { useDispatch } from 'react-redux'
-import { createBoard, updateBoard } from '../../actions/boards'
-import { useHistory } from 'react-router'
 import { Modal } from '../Layout/Modal'
+import { TextInput } from '../Layout/TextInput'
 
-export const NewBoard = ({ board, isOpen, setIsOpen }) => {
+export const NewCardList = ({ list, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
-  const history = useHistory()
+  const { boardId } = useParams()
+  const boards = useSelector(state => state.boards)
+  const board = boards.find(board => board.id.toString() === boardId)
 
-  const [name, setName] = useState(board ? board.name : '')
+  const [name, setName] = useState(list ? list.name : '')
   const handleChange = (e) => {
     setName(e.target.value)
   }
@@ -23,24 +24,13 @@ export const NewBoard = ({ board, isOpen, setIsOpen }) => {
 
     setIsOpen(false)
     setName('')
-
-    if (!board) {
-      const { payload } = await dispatch(createBoard({
-        name
-      }))
-      history.push(`/boards/${payload.id}`)
-    } else {
-      dispatch(updateBoard(board.id, {
-        name
-      }))
-    }
   }
 
   useEffect(() => {
-    if (isOpen && board) {
-      setName(board.name)
+    if (isOpen && list) {
+      setName(list.name)
     }
-  }, [isOpen, board])
+  }, [isOpen, list])
 
   return (
     <Modal show={isOpen} setIsOpen={setIsOpen}>
@@ -49,23 +39,26 @@ export const NewBoard = ({ board, isOpen, setIsOpen }) => {
           className="font-bold text-lg flex gap-1 items-center"
         >
           {
-            board ?
-              'Edit board title' :
-              'Add board title'
+            list ?
+              'Edit list title' :
+              <>
+                Add another list into
+                "{board.name}"
+              </>
           }
         </Dialog.Title>
 
         {/* <Dialog.Description></Dialog.Description> */}
 
         <form onSubmit={handleSubmit}>
-          <TextInput placeholder="Board title" value={name} onChange={handleChange} />
+          <TextInput placeholder="List title" value={name} onChange={handleChange} />
 
           <Button type="submit"
             className="bg-indigo-500">
             {
-              board ?
-                'Update board' :
-                'Create board'
+              list ?
+                'Update list' :
+                'Create list'
             }
           </Button>
           <Button type="button"

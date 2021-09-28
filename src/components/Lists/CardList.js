@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import { Button } from '../Layout/Button';
 import { Card } from './Card';
+import { PlusIcon } from '@heroicons/react/outline'
+import { NewCard } from './NewCard';
 
 export const CardList = ({ column, index, cards }) => {
+  const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
+
   return (
     <Draggable draggableId={column.id} index={index}>
       {provided => (
@@ -34,11 +37,33 @@ export const CardList = ({ column, index, cards }) => {
             )}
           </Droppable>
           {/* stick at bottom */}
-          <div className="px-1">
-            <Button className="bg-gray-500 w-full mx-auto">
-              + Add new card
-            </Button>
+          <div className="px-1 pb-1">
+            <button
+              onClick={() => setNewCardModalIsOpen(true)}
+              className={
+                `
+          py-1 px-2 mb-2 mx-auto w-full
+          hover:bg-gray-300
+          text-gray-600 
+          hover:text-gray-800
+          duration-200
+          rounded flex flex-col
+          `
+              }>
+              <span className={
+                `
+            text-sm ml-2
+              flex flex-row gap-1 items-center
+            `
+              }>
+                <PlusIcon className="w-4 h-4" />
+                <p>
+                  Add a card
+                </p>
+              </span>
+            </button>
           </div>
+          <NewCard isOpen={newCardModalIsOpen} setIsOpen={setNewCardModalIsOpen} />
         </div>
       )}
     </Draggable>

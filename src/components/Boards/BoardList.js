@@ -10,7 +10,7 @@ export const BoardList = () => {
 
   useEffect(() => {
     dispatch(getBoards())
-  }, [])
+  }, [dispatch])
 
   return (
     <div className="max-w-5xl mt-6 mx-auto px-16 pb-12">

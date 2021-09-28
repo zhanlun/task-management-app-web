@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { getBoards } from '../../actions/boards'
 import { NewBoard } from '../Boards/NewBoard'
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { CardList } from './CardList'
 import { ListWrapper } from './ListWrapper'
 
 export const Dashboard = () => {

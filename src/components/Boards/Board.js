@@ -16,7 +16,10 @@ export const Board = ({ board }) => {
 
   const handleRedirect = (e) => {
     e.preventDefault()
-    if (e.target.tagName !== 'BUTTON') {
+    if (e.target.tagName !== 'BUTTON' &&
+      e.target.tagName !== 'svg' &&
+      e.target.tagName !== 'path'
+    ) {
       history.push(`/boards/${board.id}`)
     }
   }

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { CardList } from './CardList';
 import initialData from './data';
 import { useMediaQuery } from 'react-responsive';
+import { NewCardList } from './NewCardList';
 
 export const ListWrapper = () => {
   const [data, setData] = useState(initialData)
+  const [newListModalIsOpen, setNewListModalIsOpen] = useState(false)
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
@@ -92,14 +93,16 @@ export const ListWrapper = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
+      <div
+        className="h-full flex flex-col sm:flex-row flex-nowrap sm:flex-wrap justify-start items-start gap-1">
       <Droppable
         droppableId="all-columns"
         direction={isPhone ? 'vertical' : 'horizontal'}
         type="column"
       >
         {provided => (
-          <div
-            className="h-full flex flex-col sm:flex-row flex-wrap justify-start items-start gap-1"
+            <div
+              className="sm:h-full flex flex-col sm:flex-row flex-wrap justify-start items-start gap-1"
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
@@ -118,6 +121,28 @@ export const ListWrapper = () => {
           </div>
         )}
       </Droppable>
+        {/* stick at bottom */}
+        <button
+          onClick={() => setNewListModalIsOpen(true)}
+          className={
+            `
+          py-3 px-2 my-2 mx-auto sm:mx-1 w-11/12 sm:w-72
+          bg-white bg-opacity-20 hover:bg-opacity-30
+          duration-200
+          rounded flex flex-col
+          `
+          }>
+          <span className={
+            `
+            text-white text-sm ml-2
+            `
+          }>
+            + Add another list
+          </span>
+        </button>
+      </div>
+
+      <NewCardList isOpen={newListModalIsOpen} setIsOpen={setNewListModalIsOpen} />
     </DragDropContext>
   )
 }
