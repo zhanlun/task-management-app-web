@@ -32,7 +32,7 @@ export const ListWrapper = ({ board }) => {
       newCardListOrder.splice(source.index, 1);
       newCardListOrder.splice(destination.index, 0, draggableId);
 
-      dispatch(updateCardListIdOrder(board.id, newCardListOrder))
+      dispatch(updateCardListIdOrder(board, newCardListOrder))
       return;
     }
 
@@ -43,18 +43,18 @@ export const ListWrapper = ({ board }) => {
       const newCardIds = [...home.card_ids_order]
       newCardIds.splice(source.index, 1);
       newCardIds.splice(destination.index, 0, draggableId);
-      dispatch(updateCardIdOrder(home.id, newCardIds))
+      dispatch(updateCardIdOrder(home, newCardIds))
       return;
     }
 
     // moving from one list to another
     const homeCardIds = [...home.card_ids_order]
     homeCardIds.splice(source.index, 1);
-    dispatch(updateCardIdOrder(home.id, homeCardIds))
+    dispatch(updateCardIdOrder(home, homeCardIds))
 
     const foreignCardIds = [...foreign.card_ids_order]
     foreignCardIds.splice(destination.index, 0, draggableId);
-    dispatch(updateCardIdOrder(foreign.id, foreignCardIds))
+    dispatch(updateCardIdOrder(foreign, foreignCardIds))
   };
 
   const isPhone = useMediaQuery({

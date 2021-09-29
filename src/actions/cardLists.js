@@ -41,11 +41,14 @@ export const deleteCardList = (id) => async (dispatch) => {
   }
 }
 
-export const updateCardIdOrder = (id, childIdOrder) => async (dispatch) => {
+export const updateCardIdOrder = (cardList, childIdOrder) => {
   try {
-    const { data } = await api.updateCardIdOrder(id, childIdOrder)
-
-    return dispatch({ type: UPDATE_CHILD_ID_ORDER, payload: data })
+    const data = {
+      ...cardList,
+      card_ids_order: childIdOrder,
+    }
+    api.updateCardIdOrder(cardList.id, childIdOrder)
+    return { type: UPDATE_CHILD_ID_ORDER, payload: data }
   } catch (error) {
     console.log(error)
   }
