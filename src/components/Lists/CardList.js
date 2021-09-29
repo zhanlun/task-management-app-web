@@ -26,14 +26,13 @@ export const CardList = ({ cardList, index, cards }) => {
             {cardList.title}
           </h3>
           <Droppable droppableId={cardList.id} type="card">
-            {(provided, snapshot) => (
+            {(provided) => (
               <div
                 className={`
                   px-1 pt-1 mt-1
                 `}
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                isDraggingOver={snapshot.isDraggingOver}
               >
                 <InnerList cards={cards} />
                 {provided.placeholder}

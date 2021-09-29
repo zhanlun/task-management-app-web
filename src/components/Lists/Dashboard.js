@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { getBoards } from '../../actions/boards'
+import { getCardListsByBoard } from '../../actions/cardLists'
+import { getCardsByBoard } from '../../actions/cards'
 import { NewBoard } from '../Boards/NewBoard'
 import { ListWrapper } from './ListWrapper'
 
@@ -12,12 +14,28 @@ export const Dashboard = () => {
   const board = boards.find(board => board.id.toString() === boardId)
 
   const [editOpen, setEditOpen] = useState(false)
+  const [isReady, setIsReady] = useState(false)
+
+  const fetchRelatedData = async () => {
+    const d = await dispatch(getCardListsByBoard(boardId))
+    console.log(d)
+    const e = await dispatch(getCardsByBoard(boardId))
+    console.log(e)
+    setIsReady(true)
+    console.log('after')
+  }
 
   useEffect(() => {
     if (boards.length === 0) {
       dispatch(getBoards())
     }
   })
+
+  useEffect(() => {
+    if (board) {
+      fetchRelatedData()
+    }
+  }, [board])
 
   return (
     <div className="w-full mt-2 h-full flex flex-col mx-auto">
@@ -37,8 +55,11 @@ export const Dashboard = () => {
                   {board.title}
                 </span>
               </button>
-                {/* put lists and cards */}
-              <ListWrapper board={board} />
+              {/* put lists and cards */}
+              {
+                isReady &&
+                <ListWrapper board={board} />
+              }
             </div>
           )
         }

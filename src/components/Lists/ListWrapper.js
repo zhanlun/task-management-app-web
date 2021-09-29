@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { CardList } from './CardList';
 import initialData from './data';
 import { useMediaQuery } from 'react-responsive';
 import { NewCardList } from './NewCardList';
+import { useSelector } from 'react-redux';
+
+const arrayToMapReduceFunction = (obj, item) => Object.assign(obj, {
+  [item.id]: item
+})
 
 export const ListWrapper = ({ board }) => {
-  const [data, setData] = useState(initialData)
   const [newListModalIsOpen, setNewListModalIsOpen] = useState(false)
+  const boardState = useSelector(state => state.boards.find(b => b.id === board.id))
+  const cardListsState = useSelector(state => state.cardLists)
+  const cardsState = useSelector(state => state.cards)
+
+  const [data, setData] = useState({
+    cards: cardsState.reduce(arrayToMapReduceFunction, {}),
+    cardLists: cardListsState.reduce(arrayToMapReduceFunction, {}),
+    cardListOrder: boardState.card_list_ids_order,
+  })
+
+  console.log(data)
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
@@ -40,13 +55,13 @@ export const ListWrapper = ({ board }) => {
     const foreign = data.cardLists[destination.droppableId];
 
     if (home === foreign) {
-      const newCardIds = Array.from(home.cardIds);
+      const newCardIds = Array.from(home.card_ids_order);
       newCardIds.splice(source.index, 1);
       newCardIds.splice(destination.index, 0, draggableId);
 
       const newHome = {
         ...home,
-        cardIds: newCardIds,
+        card_ids_order: newCardIds,
       };
 
       const newState = {
@@ -62,18 +77,18 @@ export const ListWrapper = ({ board }) => {
     }
 
     // moving from one list to another
-    const homeCardIds = Array.from(home.cardIds);
+    const homeCardIds = Array.from(home.card_ids_order);
     homeCardIds.splice(source.index, 1);
     const newHome = {
       ...home,
-      cardIds: homeCardIds,
+      card_ids_order: homeCardIds,
     };
 
-    const foreignCardIds = Array.from(foreign.cardIds);
+    const foreignCardIds = Array.from(foreign.card_ids_order);
     foreignCardIds.splice(destination.index, 0, draggableId);
     const newForeign = {
       ...foreign,
-      cardIds: foreignCardIds,
+      card_ids_order: foreignCardIds,
     };
 
     const newState = {
@@ -103,11 +118,12 @@ export const ListWrapper = ({ board }) => {
         {provided => (
             <div
               className="sm:h-full flex flex-col sm:flex-row flex-wrap justify-start items-start gap-1"
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-          >
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
               {data.cardListOrder.map((cardListId, index) => {
-                const cardList = data.cardLists[cardListId];
+              console.log(data)
+              const cardList = data.cardLists[cardListId];
               return (
                 <InnerList
                   key={cardList.id}
@@ -149,6 +165,7 @@ export const ListWrapper = ({ board }) => {
 }
 
 const InnerList = ({ cardList, cardMap, index }) => {
-  const cards = cardList.cardIds.map(cardId => cardMap[cardId]);
+  console.log(cardList, cardMap, index)
+  const cards = cardList.card_ids_order.map(cardId => cardMap[cardId]);
   return <CardList cardList={cardList} cards={cards} index={index} />;
 }

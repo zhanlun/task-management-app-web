@@ -5,7 +5,7 @@ export const getCardListsByBoard = (boardId) => async (dispatch) => {
   try {
     const { data } = await api.getAllCardListsByBoardId(boardId)
 
-    dispatch({ type: GET_ALL_BY_BOARD, payload: data })
+    return dispatch({ type: GET_ALL_BY_BOARD, payload: data })
   } catch (error) {
     console.log(error)
   }
