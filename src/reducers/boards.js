@@ -1,4 +1,4 @@
-import { CREATE, DELETE, GET_ALL, UPDATE } from "../constants/actionType/boards"
+import { CREATE, DELETE, GET_ALL, UPDATE, UPDATE_CHILD_ID_ORDER } from "../constants/actionType/boards"
 
 const boardsReducer = (boards = [], action) => {
   switch (action.type) {
@@ -7,6 +7,7 @@ const boardsReducer = (boards = [], action) => {
     case CREATE:
       return [...boards, action.payload]
     case UPDATE:
+    case UPDATE_CHILD_ID_ORDER:
       return boards.map(board => board.id === action.payload.id ? action.payload : board)
     case DELETE:
       return boards.filter(board => board.id !== action.payload)

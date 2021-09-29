@@ -45,7 +45,7 @@ export const updateCardIdOrder = (id, childIdOrder) => async (dispatch) => {
   try {
     const { data } = await api.updateCardIdOrder(id, childIdOrder)
 
-    dispatch({ type: UPDATE_CHILD_ID_ORDER, payload: data })
+    return dispatch({ type: UPDATE_CHILD_ID_ORDER, payload: data })
   } catch (error) {
     console.log(error)
   }
