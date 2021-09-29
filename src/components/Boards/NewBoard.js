@@ -11,34 +11,34 @@ export const NewBoard = ({ board, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
   const history = useHistory()
 
-  const [name, setName] = useState(board ? board.name : '')
+  const [title, setTitle] = useState(board ? board.title : '')
   const handleChange = (e) => {
-    setName(e.target.value)
+    setTitle(e.target.value)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!name.trim()) return
+    if (!title.trim()) return
 
     setIsOpen(false)
-    setName('')
+    setTitle('')
 
     if (!board) {
       const { payload } = await dispatch(createBoard({
-        name
+        title
       }))
       history.push(`/boards/${payload.id}`)
     } else {
       dispatch(updateBoard(board.id, {
-        name
+        title
       }))
     }
   }
 
   useEffect(() => {
     if (isOpen && board) {
-      setName(board.name)
+      setTitle(board.title)
     }
   }, [isOpen, board])
 
@@ -58,7 +58,7 @@ export const NewBoard = ({ board, isOpen, setIsOpen }) => {
         {/* <Dialog.Description></Dialog.Description> */}
 
         <form onSubmit={handleSubmit}>
-          <TextInput placeholder="Board title" value={name} onChange={handleChange} />
+          <TextInput placeholder="Board title" value={title} onChange={handleChange} />
 
           <Button type="submit"
             className="bg-indigo-500">

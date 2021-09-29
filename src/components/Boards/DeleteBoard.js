@@ -27,7 +27,7 @@ export const DeleteBoard = ({ board, isOpen, setIsOpen }) => {
         <Dialog.Description className="text-gray-800 my-2">
           Are you sure that you want to delete this board titled&nbsp;
           <span className="font-bold text-black">
-            {board.name}
+            {board.title}
           </span>
           ?
         </Dialog.Description>

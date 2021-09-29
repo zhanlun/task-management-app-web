@@ -5,7 +5,7 @@ import initialData from './data';
 import { useMediaQuery } from 'react-responsive';
 import { NewCardList } from './NewCardList';
 
-export const ListWrapper = () => {
+export const ListWrapper = ({ board }) => {
   const [data, setData] = useState(initialData)
   const [newListModalIsOpen, setNewListModalIsOpen] = useState(false)
 
@@ -23,36 +23,36 @@ export const ListWrapper = () => {
       return;
     }
 
-    if (type === 'column') {
-      const newColumnOrder = Array.from(data.columnOrder);
-      newColumnOrder.splice(source.index, 1);
-      newColumnOrder.splice(destination.index, 0, draggableId);
+    if (type === 'cardList') {
+      const newCardListOrder = Array.from(data.cardListOrder);
+      newCardListOrder.splice(source.index, 1);
+      newCardListOrder.splice(destination.index, 0, draggableId);
 
       const newState = {
         ...data,
-        columnOrder: newColumnOrder,
+        cardListOrder: newCardListOrder,
       };
       setData(newState);
       return;
     }
 
-    const home = data.columns[source.droppableId];
-    const foreign = data.columns[destination.droppableId];
+    const home = data.cardLists[source.droppableId];
+    const foreign = data.cardLists[destination.droppableId];
 
     if (home === foreign) {
-      const newTaskIds = Array.from(home.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      const newCardIds = Array.from(home.cardIds);
+      newCardIds.splice(source.index, 1);
+      newCardIds.splice(destination.index, 0, draggableId);
 
       const newHome = {
         ...home,
-        taskIds: newTaskIds,
+        cardIds: newCardIds,
       };
 
       const newState = {
         ...data,
-        columns: {
-          ...data.columns,
+        cardLists: {
+          ...data.cardLists,
           [newHome.id]: newHome,
         },
       };
@@ -62,24 +62,24 @@ export const ListWrapper = () => {
     }
 
     // moving from one list to another
-    const homeTaskIds = Array.from(home.taskIds);
-    homeTaskIds.splice(source.index, 1);
+    const homeCardIds = Array.from(home.cardIds);
+    homeCardIds.splice(source.index, 1);
     const newHome = {
       ...home,
-      taskIds: homeTaskIds,
+      cardIds: homeCardIds,
     };
 
-    const foreignTaskIds = Array.from(foreign.taskIds);
-    foreignTaskIds.splice(destination.index, 0, draggableId);
+    const foreignCardIds = Array.from(foreign.cardIds);
+    foreignCardIds.splice(destination.index, 0, draggableId);
     const newForeign = {
       ...foreign,
-      taskIds: foreignTaskIds,
+      cardIds: foreignCardIds,
     };
 
     const newState = {
       ...data,
-      columns: {
-        ...data.columns,
+      cardLists: {
+        ...data.cardLists,
         [newHome.id]: newHome,
         [newForeign.id]: newForeign,
       },
@@ -96,9 +96,9 @@ export const ListWrapper = () => {
       <div
         className="h-full flex flex-col sm:flex-row flex-nowrap sm:flex-wrap justify-start items-start gap-1">
       <Droppable
-        droppableId="all-columns"
+          droppableId="all-card-lists"
         direction={isPhone ? 'vertical' : 'horizontal'}
-        type="column"
+          type="cardList"
       >
         {provided => (
             <div
@@ -106,13 +106,13 @@ export const ListWrapper = () => {
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            {data.columnOrder.map((columnId, index) => {
-              const column = data.columns[columnId];
+              {data.cardListOrder.map((cardListId, index) => {
+                const cardList = data.cardLists[cardListId];
               return (
                 <InnerList
-                  key={column.id}
-                  column={column}
-                  taskMap={data.tasks}
+                  key={cardList.id}
+                  cardList={cardList}
+                  cardMap={data.cards}
                   index={index}
                 />
               );
@@ -130,6 +130,7 @@ export const ListWrapper = () => {
           bg-white bg-opacity-20 hover:bg-opacity-30
           duration-200
           rounded flex flex-col
+          select-none
           `
           }>
           <span className={
@@ -137,7 +138,7 @@ export const ListWrapper = () => {
             text-white text-sm ml-2
             `
           }>
-            + Add another list
+            + Add a list
           </span>
         </button>
       </div>
@@ -147,7 +148,7 @@ export const ListWrapper = () => {
   )
 }
 
-const InnerList = ({ column, taskMap, index }) => {
-  const tasks = column.taskIds.map(taskId => taskMap[taskId]);
-  return <CardList column={column} cards={tasks} index={index} />;
+const InnerList = ({ cardList, cardMap, index }) => {
+  const cards = cardList.cardIds.map(cardId => cardMap[cardId]);
+  return <CardList cardList={cardList} cards={cards} index={index} />;
 }

@@ -44,7 +44,7 @@ export const NewCard = ({ card, isOpen, setIsOpen }) => {
             card ?
               'Edit card title' :
               <>
-                Add another card into
+                Add a card into
                 "{list.name}"
               </>
           }

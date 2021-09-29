@@ -4,24 +4,28 @@ import { Card } from './Card';
 import { PlusIcon } from '@heroicons/react/outline'
 import { NewCard } from './NewCard';
 
-export const CardList = ({ column, index, cards }) => {
+export const CardList = ({ cardList, index, cards }) => {
   const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
 
   return (
-    <Draggable draggableId={column.id} index={index}>
-      {provided => (
+    <Draggable draggableId={cardList.id} index={index}>
+      {(provided, snapshot) => (
         <div
           className={`
-            px-1 pt-2 my-2 mx-auto sm:mx-1 w-11/12 sm:w-72 bg-gray-200 rounded flex flex-col
+            px-1 pt-2 my-2 mx-auto sm:mx-1 w-11/12 sm:w-72 rounded flex flex-col
             gap-0
+            ${snapshot.isDragging ?
+              'bg-yellow-100 shadow' :
+              'bg-gray-200'
+            }
           `}
           {...provided.draggableProps} ref={provided.innerRef}>
           <h3
             className="font-bold text-gray-700 tracking-wide text-sm mt-1 ml-3"
             {...provided.dragHandleProps}>
-            {column.title}
+            {cardList.title}
           </h3>
-          <Droppable droppableId={column.id} type="card">
+          <Droppable droppableId={cardList.id} type="card">
             {(provided, snapshot) => (
               <div
                 className={`
@@ -48,6 +52,7 @@ export const CardList = ({ column, index, cards }) => {
           hover:text-gray-800
           duration-200
           rounded flex flex-col
+          select-none
           `
               }>
               <span className={

@@ -28,18 +28,17 @@ export const Dashboard = () => {
               <button
                 type="button"
                 onClick={(e) => {
-                  console.log(board)
                   e.preventDefault()
                   setEditOpen(true)
                 }}
                 className={"px-2 py-1 m-2 rounded bg-yellow-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 "}
               >
                 <span className="text-xl">
-                  {board.name}
+                  {board.title}
                 </span>
               </button>
                 {/* put lists and cards */}
-              <ListWrapper />
+              <ListWrapper board={board} />
             </div>
           )
         }

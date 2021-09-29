@@ -30,7 +30,7 @@ export const Board = ({ board }) => {
       onContextMenu={handleRightClick}
       className={"bg-yellow-500 shadow-lg rounded-lg pt-6  pr-0 pb-0 text-center hover:bg-opacity-80 duration-100 select-none"}>
       <p className="font-bold text-white tracking-wider py-6">
-        {board.name}
+        {board.title}
       </p>
 
       <BoardDropDownMenu menuRef={menuRef} board={board} />

@@ -42,8 +42,8 @@ export const NewCardList = ({ list, isOpen, setIsOpen }) => {
             list ?
               'Edit list title' :
               <>
-                Add another list into
-                "{board.name}"
+                Add a list into
+                "{board.title}"
               </>
           }
         </Dialog.Title>
