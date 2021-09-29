@@ -1,6 +1,6 @@
 
 import * as api from '../api/boards'
-import { CREATE, DELETE, GET_ALL, UPDATE } from '../constants/actionType/boards'
+import { CREATE, DELETE, GET_ALL, UPDATE, UPDATE_CHILD_ID_ORDER } from '../constants/actionType/boards'
 
 export const getBoards = () => async (dispatch) => {
   try {
@@ -36,6 +36,16 @@ export const deleteBoard = (id) => async (dispatch) => {
     await api.deleteBoard(id)
 
     dispatch({ type: DELETE, payload: id })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const updateCardListIdOrder = (id, childIdOrder) => async (dispatch) => {
+  try {
+    const { data } = await api.updateCardListIdOrder(id, childIdOrder)
+
+    dispatch({ type: UPDATE_CHILD_ID_ORDER, payload: data })
   } catch (error) {
     console.log(error)
   }

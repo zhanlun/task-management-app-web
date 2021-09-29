@@ -1,11 +1,12 @@
 import * as api from '../api/cards'
 import { CREATE_BY_CARD_LIST, DELETE, GET_ALL_BY_BOARD, UPDATE } from '../constants/actionType/cards'
+import { arrayToMapReduceFunction } from '../util/arrayToDictionary'
 
 export const getCardsByBoard = (boardId) => async (dispatch) => {
   try {
     const { data } = await api.getAllCardsByBoardId(boardId)
-
-    return dispatch({ type: GET_ALL_BY_BOARD, payload: data })
+    const dataDictionary = data.reduce(arrayToMapReduceFunction, {})
+    return dispatch({ type: GET_ALL_BY_BOARD, payload: dataDictionary })
   } catch (error) {
     console.log(error)
   }

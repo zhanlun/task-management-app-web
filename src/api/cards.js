@@ -6,6 +6,6 @@ const urlByCardList = `${rootApiUrl}/card-lists`
 const urlByCard = `${rootApiUrl}/cards`
 
 export const getAllCardsByBoardId = (boardId) => axios.get(`${urlByBoard}/${boardId}/cards`)
-export const createCardByCardListId = (cardListId, data) => axios.post(`${urlByCardList}/${cardListId}/card`, data)
+export const createCardByCardListId = (cardListId, data) => axios.post(`${urlByCardList}/${cardListId}/cards`, data)
 export const updateCard = (id, data) => axios.patch(`${urlByCard}/${id}`, data)
 export const deleteCard = (id) => axios.delete(`${urlByCard}/${id}`)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { getBoards } from '../../actions/boards'
@@ -16,14 +16,11 @@ export const Dashboard = () => {
   const [editOpen, setEditOpen] = useState(false)
   const [isReady, setIsReady] = useState(false)
 
-  const fetchRelatedData = async () => {
-    const d = await dispatch(getCardListsByBoard(boardId))
-    console.log(d)
-    const e = await dispatch(getCardsByBoard(boardId))
-    console.log(e)
+  const fetchRelatedData = useCallback(async () => {
+    await dispatch(getCardListsByBoard(boardId))
+    await dispatch(getCardsByBoard(boardId))
     setIsReady(true)
-    console.log('after')
-  }
+  }, [boardId, dispatch])
 
   useEffect(() => {
     if (boards.length === 0) {
@@ -35,7 +32,7 @@ export const Dashboard = () => {
     if (board) {
       fetchRelatedData()
     }
-  }, [board])
+  }, [board, fetchRelatedData])
 
   return (
     <div className="w-full mt-2 h-full flex flex-col mx-auto">

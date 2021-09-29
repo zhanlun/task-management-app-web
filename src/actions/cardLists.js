@@ -1,11 +1,12 @@
 import * as api from '../api/cardLists'
-import { CREATE_BY_BOARD, DELETE, GET_ALL_BY_BOARD, UPDATE } from '../constants/actionType/cardLists'
+import { CREATE_BY_BOARD, DELETE, GET_ALL_BY_BOARD, UPDATE, UPDATE_CHILD_ID_ORDER } from '../constants/actionType/cardLists'
+import { arrayToMapReduceFunction } from '../util/arrayToDictionary'
 
 export const getCardListsByBoard = (boardId) => async (dispatch) => {
   try {
     const { data } = await api.getAllCardListsByBoardId(boardId)
-
-    return dispatch({ type: GET_ALL_BY_BOARD, payload: data })
+    const dataDictionary = data.reduce(arrayToMapReduceFunction, {})
+    return dispatch({ type: GET_ALL_BY_BOARD, payload: dataDictionary })
   } catch (error) {
     console.log(error)
   }
@@ -35,6 +36,16 @@ export const deleteCardList = (id) => async (dispatch) => {
     await api.deleteCardList(id)
 
     dispatch({ type: DELETE, payload: id })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const updateCardIdOrder = (id, childIdOrder) => async (dispatch) => {
+  try {
+    const { data } = await api.updateCardIdOrder(id, childIdOrder)
+
+    dispatch({ type: UPDATE_CHILD_ID_ORDER, payload: data })
   } catch (error) {
     console.log(error)
   }

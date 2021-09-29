@@ -8,3 +8,6 @@ export const getAllCardListsByBoardId = (boardId) => axios.get(`${urlByBoard}/${
 export const createCardListsByBoardId = (boardId, data) => axios.post(`${urlByBoard}/${boardId}`, data)
 export const updateCardList = (id, data) => axios.patch(`${urlByCardList}/${id}`, data)
 export const deleteCardList = (id) => axios.delete(`${urlByCardList}/${id}`)
+export const updateCardIdOrder = (id, childIdOrder) => axios.patch(`${urlByCardList}/${id}/cards`, {
+  card_ids_order: childIdOrder,
+})

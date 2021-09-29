@@ -1,32 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { CardList } from './CardList';
-import initialData from './data';
 import { useMediaQuery } from 'react-responsive';
 import { NewCardList } from './NewCardList';
-import { useSelector } from 'react-redux';
-
-const arrayToMapReduceFunction = (obj, item) => Object.assign(obj, {
-  [item.id]: item
-})
+import { useDispatch, useSelector } from 'react-redux';
+import { updateCardListIdOrder } from '../../actions/boards';
+import { updateCardIdOrder } from '../../actions/cardLists';
 
 export const ListWrapper = ({ board }) => {
+  const dispatch = useDispatch()
   const [newListModalIsOpen, setNewListModalIsOpen] = useState(false)
   const boardState = useSelector(state => state.boards.find(b => b.id === board.id))
-  const cardListsState = useSelector(state => state.cardLists)
-  const cardsState = useSelector(state => state.cards)
+  const cardLists = useSelector(state => state.cardLists)
+  const cards = useSelector(state => state.cards)
+  const cardListOrder = boardState.card_list_ids_order
 
-  const [data, setData] = useState({
-    cards: cardsState.reduce(arrayToMapReduceFunction, {}),
-    cardLists: cardListsState.reduce(arrayToMapReduceFunction, {}),
-    cardListOrder: boardState.card_list_ids_order,
-  })
-
-  console.log(data)
-
-  const onDragEnd = result => {
-    const { destination, source, draggableId, type } = result;
-
+  const onDragEnd = ({ destination, source, draggableId, type }) => {
     if (!destination) {
       return;
     }
@@ -39,67 +28,33 @@ export const ListWrapper = ({ board }) => {
     }
 
     if (type === 'cardList') {
-      const newCardListOrder = Array.from(data.cardListOrder);
+      const newCardListOrder = [...cardListOrder];
       newCardListOrder.splice(source.index, 1);
       newCardListOrder.splice(destination.index, 0, draggableId);
 
-      const newState = {
-        ...data,
-        cardListOrder: newCardListOrder,
-      };
-      setData(newState);
+      dispatch(updateCardListIdOrder(board.id, newCardListOrder))
       return;
     }
 
-    const home = data.cardLists[source.droppableId];
-    const foreign = data.cardLists[destination.droppableId];
+    const home = cardLists[source.droppableId];
+    const foreign = cardLists[destination.droppableId];
 
     if (home === foreign) {
-      const newCardIds = Array.from(home.card_ids_order);
+      const newCardIds = [...home.card_ids_order]
       newCardIds.splice(source.index, 1);
       newCardIds.splice(destination.index, 0, draggableId);
-
-      const newHome = {
-        ...home,
-        card_ids_order: newCardIds,
-      };
-
-      const newState = {
-        ...data,
-        cardLists: {
-          ...data.cardLists,
-          [newHome.id]: newHome,
-        },
-      };
-
-      setData(newState);
+      dispatch(updateCardIdOrder(home.id, newCardIds))
       return;
     }
 
     // moving from one list to another
-    const homeCardIds = Array.from(home.card_ids_order);
+    const homeCardIds = [...home.card_ids_order]
     homeCardIds.splice(source.index, 1);
-    const newHome = {
-      ...home,
-      card_ids_order: homeCardIds,
-    };
+    dispatch(updateCardIdOrder(home.id, homeCardIds))
 
-    const foreignCardIds = Array.from(foreign.card_ids_order);
+    const foreignCardIds = [...foreign.card_ids_order]
     foreignCardIds.splice(destination.index, 0, draggableId);
-    const newForeign = {
-      ...foreign,
-      card_ids_order: foreignCardIds,
-    };
-
-    const newState = {
-      ...data,
-      cardLists: {
-        ...data.cardLists,
-        [newHome.id]: newHome,
-        [newForeign.id]: newForeign,
-      },
-    };
-    setData(newState);
+    dispatch(updateCardIdOrder(foreign.id, foreignCardIds))
   };
 
   const isPhone = useMediaQuery({
@@ -121,14 +76,13 @@ export const ListWrapper = ({ board }) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {data.cardListOrder.map((cardListId, index) => {
-              console.log(data)
-              const cardList = data.cardLists[cardListId];
+              {cardListOrder.map((cardListId, index) => {
+                const cardList = cardLists[cardListId];
               return (
                 <InnerList
                   key={cardList.id}
                   cardList={cardList}
-                  cardMap={data.cards}
+                  cardMap={cards}
                   index={index}
                 />
               );
@@ -165,7 +119,6 @@ export const ListWrapper = ({ board }) => {
 }
 
 const InnerList = ({ cardList, cardMap, index }) => {
-  console.log(cardList, cardMap, index)
   const cards = cardList.card_ids_order.map(cardId => cardMap[cardId]);
   return <CardList cardList={cardList} cards={cards} index={index} />;
 }
