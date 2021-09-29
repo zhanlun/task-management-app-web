@@ -1,36 +1,38 @@
 import { Dialog } from '@headlessui/react'
 import React, { Fragment, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router'
+import { getCardListsByBoard } from '../../actions/cardLists'
+import { createCardByCardList } from '../../actions/cards'
 import { Button } from '../Layout/Button'
 import { Modal } from '../Layout/Modal'
 import { TextInput } from '../Layout/TextInput'
 
-export const NewCard = ({ card, isOpen, setIsOpen }) => {
+export const NewCard = ({ card, cardList, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
-  const { listId } = useParams()
-  const lists = useSelector(state => state.lists)
-  const list = {
-    name: 'dummy'
-  }// lists.find(list => list.id.toString() === listId)
+  const { boardId } = useParams()
 
-  const [name, setName] = useState(card ? card.name : '')
+  const [content, setContent] = useState(card ? card.content : '')
   const handleChange = (e) => {
-    setName(e.target.value)
+    setContent(e.target.value)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!name.trim()) return
+    if (!content.trim()) return
 
     setIsOpen(false)
-    setName('')
+    setContent('')
+    await dispatch(createCardByCardList(cardList.id, {
+      content,
+    }))
+    dispatch(getCardListsByBoard(boardId))
   }
 
   useEffect(() => {
     if (isOpen && card) {
-      setName(card.name)
+      setContent(card.content)
     }
   }, [isOpen, card])
 
@@ -45,7 +47,7 @@ export const NewCard = ({ card, isOpen, setIsOpen }) => {
               'Edit card title' :
               <>
                 Add a card into
-                "{list.name}"
+                "{cardList.title}"
               </>
           }
         </Dialog.Title>
@@ -53,7 +55,7 @@ export const NewCard = ({ card, isOpen, setIsOpen }) => {
         {/* <Dialog.Description></Dialog.Description> */}
 
         <form onSubmit={handleSubmit}>
-          <TextInput placeholder="Card title" value={name} onChange={handleChange} />
+          <TextInput placeholder="Card title" value={content} onChange={handleChange} />
 
           <Button type="submit"
             className="bg-indigo-500">

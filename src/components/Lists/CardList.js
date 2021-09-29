@@ -67,7 +67,7 @@ export const CardList = ({ cardList, index, cards }) => {
               </span>
             </button>
           </div>
-          <NewCard isOpen={newCardModalIsOpen} setIsOpen={setNewCardModalIsOpen} />
+          <NewCard cardList={cardList} isOpen={newCardModalIsOpen} setIsOpen={setNewCardModalIsOpen} />
         </div>
       )}
     </Draggable>
