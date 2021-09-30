@@ -21,11 +21,11 @@ export const createCardByCardList = (cardListId, card) => async (dispatch) => {
   }
 }
 
-export const updateCard = (id, card) => async (dispatch) => {
+export const updateCard = (id, card) => {
   try {
-    const { data } = await api.updateCard(id, card)
+    api.updateCard(id, card)
 
-    dispatch({ type: UPDATE, payload: data })
+    return { type: UPDATE, payload: card }
   } catch (error) {
     console.log(error)
   }

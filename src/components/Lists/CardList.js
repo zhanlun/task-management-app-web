@@ -3,6 +3,10 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card } from './Card';
 import { PlusIcon } from '@heroicons/react/outline'
 import { NewCard } from './NewCard';
+import { Menu, Transition } from '@headlessui/react'
+import { DotsHorizontalIcon, PencilIcon, TrashIcon } from '@heroicons/react/solid'
+import { NewCardList } from './NewCardList';
+import { DeleteCardList } from './DeleteCardList';
 
 export const CardList = ({ cardList, index, cards }) => {
   const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
@@ -20,11 +24,15 @@ export const CardList = ({ cardList, index, cards }) => {
             }
           `}
           {...provided.draggableProps} ref={provided.innerRef}>
-          <h3
-            className="font-bold text-gray-700 tracking-wide text-sm mt-1 ml-3"
-            {...provided.dragHandleProps}>
-            {cardList.title}
-          </h3>
+          <div
+            className="flex justify-between">
+            <h3
+              className="flex-grow font-bold text-gray-700 tracking-wide text-sm mt-1 ml-3"
+              {...provided.dragHandleProps}>
+              {cardList.title}
+            </h3>
+            <CardListMenu cardList={cardList} />
+          </div>
           <div>
             <Droppable droppableId={cardList.id} type="card">
               {(provided) => (
@@ -78,8 +86,78 @@ export const CardList = ({ cardList, index, cards }) => {
 
 const InnerList = ({ cards }) => {
   return (
-    cards.map((card, index) => (
-      <Card key={card.id} card={card} index={index} />
-    ))
+    cards.map((card, index) => {
+      return (
+        <Card key={card.id} card={card} index={index} />
+      )
+    })
+  )
+}
+
+const CardListMenu = ({ cardList }) => {
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
+
+  return (
+    <div className="text-right "
+    >
+      <Menu as="div" className="relative inline-block text-left"
+      >
+        <Menu.Button
+          className="inline-flex justify-center w-full p-2 text-sm font-medium text-gray-500 hover:text-gray-600 bg-gray-300 bg-opacity-0 hover:bg-opacity-80 rounded-md focus:outline-none">
+          <DotsHorizontalIcon className="w-4 h-4" />
+        </Menu.Button>
+        <Transition
+          enter="transition duration-100 ease-out"
+          enterFrom="transform scale-95 opacity-0"
+          enterTo="transform scale-100 opacity-100"
+          leave="transition duration-75 ease-out"
+          leaveFrom="transform scale-100 opacity-100"
+          leaveTo="transform scale-95 opacity-0"
+        >
+          <Menu.Items className="absolute right-0 w-56 mt-1 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <div className="px-1 py-1 ">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setEditOpen(true)
+                    }}
+                    className={`${active ? 'bg-indigo-500 text-white' : 'text-gray-900'
+                      } flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                  >
+                    <PencilIcon className="w-6 h-6 mr-2" />
+                    Edit list title
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+            <div className="px-1 py-1">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setDeleteOpen(true)
+                    }}
+                    className={`${active ? 'bg-indigo-500 text-white' : 'text-gray-900'
+                      } flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                  >
+                    <TrashIcon className="w-6 h-6 mr-2" />
+                    Delete this list
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+          </Menu.Items>
+        </Transition>
+      </Menu>
+
+      <NewCardList isOpen={editOpen} setIsOpen={setEditOpen} cardList={cardList} />
+      <DeleteCardList isOpen={deleteOpen} setIsOpen={setDeleteOpen} cardList={cardList} />
+    </div>
   )
 }

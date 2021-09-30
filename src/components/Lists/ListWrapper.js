@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateCardListIdOrder } from '../../actions/boards';
 import { updateCardIdOrder } from '../../actions/cardLists';
 import ScrollContainer from 'react-indiana-drag-scroll'
+import { updateCard } from '../../actions/cards';
 
 export const ListWrapper = ({ board }) => {
   const dispatch = useDispatch()
@@ -51,7 +52,6 @@ export const ListWrapper = ({ board }) => {
       return;
     }
 
-    // moving from one list to another
     const homeCardIds = [...home.card_ids_order]
     homeCardIds.splice(source.index, 1);
     dispatch(updateCardIdOrder(home, homeCardIds))
@@ -59,6 +59,13 @@ export const ListWrapper = ({ board }) => {
     const foreignCardIds = [...foreign.card_ids_order]
     foreignCardIds.splice(destination.index, 0, draggableId);
     dispatch(updateCardIdOrder(foreign, foreignCardIds))
+
+    dispatch(updateCard(draggableId, {
+      ...cards[draggableId],
+      card_list_id: foreign.id,
+    }
+    ))
+    return
   };
 
   let isPhone = useMediaQuery({

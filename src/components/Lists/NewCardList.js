@@ -3,18 +3,18 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { getBoards } from '../../actions/boards'
-import { createCardListByBoard } from '../../actions/cardLists'
+import { createCardListByBoard, updateCardList } from '../../actions/cardLists'
 import { Button } from '../Layout/Button'
 import { Modal } from '../Layout/Modal'
 import { TextInput } from '../Layout/TextInput'
 
-export const NewCardList = ({ list, isOpen, setIsOpen }) => {
+export const NewCardList = ({ cardList, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
   const { boardId } = useParams()
   const boards = useSelector(state => state.boards)
   const board = boards.find(board => board.id.toString() === boardId)
 
-  const [title, setTitle] = useState(list ? list.title : '')
+  const [title, setTitle] = useState(cardList ? cardList.title : '')
   const handleChange = (e) => {
     setTitle(e.target.value)
   }
@@ -26,17 +26,24 @@ export const NewCardList = ({ list, isOpen, setIsOpen }) => {
 
     setIsOpen(false)
     setTitle('')
-    await dispatch(createCardListByBoard(boardId, {
-      title,
-    }))
+    if (cardList) {
+      await dispatch(updateCardList(cardList.id, {
+        title,
+        board_id: cardList.board_id,
+      }))
+    } else {
+      await dispatch(createCardListByBoard(boardId, {
+        title,
+      }))
+    }
     dispatch(getBoards())
   }
 
   useEffect(() => {
-    if (isOpen && list) {
-      setTitle(list.title)
+    if (isOpen && cardList) {
+      setTitle(cardList.title)
     }
-  }, [isOpen, list])
+  }, [isOpen, cardList])
 
   return (
     <Modal show={isOpen} setIsOpen={setIsOpen}>
@@ -45,7 +52,7 @@ export const NewCardList = ({ list, isOpen, setIsOpen }) => {
           className="font-bold text-lg flex gap-1 items-center"
         >
           {
-            list ?
+            cardList ?
               'Edit list title' :
               <>
                 Add a list into
@@ -62,7 +69,7 @@ export const NewCardList = ({ list, isOpen, setIsOpen }) => {
           <Button type="submit"
             className="bg-indigo-500">
             {
-              list ?
+              cardList ?
                 'Update list' :
                 'Create list'
             }
