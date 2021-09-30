@@ -12,7 +12,8 @@ export const CardList = ({ cardList, index, cards }) => {
       {(provided, snapshot) => (
         <div
           className={`
-            px-1 pt-2 my-2 mx-auto sm:mx-1 w-11/12 sm:w-72 rounded flex flex-col
+            outer-card-list
+            px-1 pt-2 my-2 mx-auto sm:ml-0 sm:mr-2 w-11/12 sm:w-72 rounded flex flex-col
             gap-0
             ${snapshot.isDragging ?
               'bg-yellow-100 shadow' :
@@ -25,20 +26,22 @@ export const CardList = ({ cardList, index, cards }) => {
             {...provided.dragHandleProps}>
             {cardList.title}
           </h3>
-          <Droppable droppableId={cardList.id} type="card">
-            {(provided) => (
-              <div
-                className={`
-                  px-1 pt-1 mt-1
+          <div className="card-list-height">
+            <Droppable droppableId={cardList.id} type="card">
+              {(provided) => (
+                <div
+                  className={`
+                px-1 pt-1 mt-1
                 `}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <InnerList cards={cards} />
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  <InnerList cards={cards} />
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </div>
           {/* stick at bottom */}
           <div className="px-1 pb-1">
             <button

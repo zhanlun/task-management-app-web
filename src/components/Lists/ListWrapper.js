@@ -6,16 +6,20 @@ import { NewCardList } from './NewCardList';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateCardListIdOrder } from '../../actions/boards';
 import { updateCardIdOrder } from '../../actions/cardLists';
+import ScrollContainer from 'react-indiana-drag-scroll'
 
 export const ListWrapper = ({ board }) => {
   const dispatch = useDispatch()
   const [newListModalIsOpen, setNewListModalIsOpen] = useState(false)
+  const [horizontalScrollable, setHorizontalScrollable] = useState(true)
   const boardState = useSelector(state => state.boards.find(b => b.id === board.id))
   const cardLists = useSelector(state => state.cardLists)
   const cards = useSelector(state => state.cards)
   const cardListOrder = boardState.card_list_ids_order
 
   const onDragEnd = ({ destination, source, draggableId, type }) => {
+    setHorizontalScrollable(true)
+
     if (!destination) {
       return;
     }
@@ -61,10 +65,23 @@ export const ListWrapper = ({ board }) => {
     query: '(max-width: 640px)'
   })
 
+  const handleMouseMove = (e) => {
+    const percent = e.pageX / window.innerWidth
+    console.log(percent, horizontalScrollable)
+    if (!horizontalScrollable && (
+      percent < 0.3 || percent > 0.7
+    )) {
+      setHorizontalScrollable(true)
+    }
+  }
+
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div
-        className="h-full flex flex-col sm:flex-row flex-nowrap sm:flex-wrap justify-start items-start gap-1">
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={() => setHorizontalScrollable(false)}>
+      <ScrollContainer
+        horizontal={horizontalScrollable}
+        // ignoreElements=".draggable-card"
+        hideScrollbars={false}
+        className="h-full flex flex-col sm:overflow-x-scroll sm:flex-row flex-nowrap justify-start items-start gap-1 cursor-default">
       <Droppable
           droppableId="all-card-lists"
         direction={isPhone ? 'vertical' : 'horizontal'}
@@ -72,7 +89,8 @@ export const ListWrapper = ({ board }) => {
       >
         {provided => (
             <div
-              className="sm:h-full flex flex-col sm:flex-row flex-wrap justify-start items-start gap-1"
+              onMouseMove={handleMouseMove}
+              className="sm:pl-2 w-full sm:w-auto sm:h-full flex flex-col sm:flex-row flex-nowrap justify-start items-start gap-1"
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
@@ -96,7 +114,8 @@ export const ListWrapper = ({ board }) => {
           onClick={() => setNewListModalIsOpen(true)}
           className={
             `
-          py-3 px-2 my-2 mx-auto sm:mx-1 w-11/12 sm:w-72
+          py-3 px-2 my-2 mx-auto sm:ml-0 sm:mr-2 w-11/12 sm:w-72
+          flex-shrink-0
           bg-white bg-opacity-20 hover:bg-opacity-30
           duration-200
           rounded flex flex-col
@@ -111,7 +130,7 @@ export const ListWrapper = ({ board }) => {
             + Add a list
           </span>
         </button>
-      </div>
+      </ScrollContainer>
 
       <NewCardList isOpen={newListModalIsOpen} setIsOpen={setNewListModalIsOpen} />
     </DragDropContext>

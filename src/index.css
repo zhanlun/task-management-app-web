@@ -12,3 +12,47 @@
   color: white;
   background: #001435;
 }
+
+body {
+  overflow: overlay;
+}
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 16px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(200, 200, 200, 0.5);
+  border: none;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 200, 200, .8);
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(100, 100, 100, 0.5);
+}
+
+.outer-card-list {
+  max-height: 95%;
+}
+
+.card-list-height {
+  overflow-y: scroll;
+  max-height: 100%;
+}
+
+.card-list-height::-webkit-scrollbar-thumb {
+  background: rgb(170, 170, 170);
+}
+
+.card-list-height::-webkit-scrollbar-thumb:hover {
+  background: rgb(160, 160, 160);
+}
+
+.card-list-height::-webkit-scrollbar-track {
+  background: rgb(200, 200, 200);
+}

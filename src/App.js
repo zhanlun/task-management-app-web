@@ -12,7 +12,7 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <div className="h-5/6 px-4 pb-6 sm:pb-4 md:pb-2">
+      <div className="h-5/6 px-4 sm:px-0 pb-6 sm:pb-0">
         <Switch>
           <Route exact path="/">
             <BoardList />

@@ -36,7 +36,7 @@ export const Dashboard = () => {
 
   return (
     <div className="w-full mt-2 h-full flex flex-col mx-auto">
-      <div className="w-full p-1 mx-auto flex-grow">
+      <div className="w-full py-1 px-0 h-full mx-auto flex-grow">
         {
           board && (
             <div className="h-full">
@@ -46,7 +46,7 @@ export const Dashboard = () => {
                   e.preventDefault()
                   setEditOpen(true)
                 }}
-                className={"px-2 py-1 m-2 rounded bg-yellow-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 "}
+                className={"px-2 py-1 mx-4 my-2 sm:mx-2 rounded bg-yellow-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 "}
               >
                 <span className="text-xl">
                   {board.title}
