@@ -61,13 +61,12 @@ export const ListWrapper = ({ board }) => {
     dispatch(updateCardIdOrder(foreign, foreignCardIds))
   };
 
-  const isPhone = useMediaQuery({
+  let isPhone = useMediaQuery({
     query: '(max-width: 640px)'
   })
 
   const handleMouseMove = (e) => {
     const percent = e.pageX / window.innerWidth
-    console.log(percent, horizontalScrollable)
     if (!horizontalScrollable && (
       percent < 0.3 || percent > 0.7
     )) {
@@ -79,18 +78,18 @@ export const ListWrapper = ({ board }) => {
     <DragDropContext onDragEnd={onDragEnd} onDragStart={() => setHorizontalScrollable(false)}>
       <ScrollContainer
         horizontal={horizontalScrollable}
-        // ignoreElements=".draggable-card"
+        vertical={isPhone}
         hideScrollbars={false}
-        className="h-full flex flex-col sm:overflow-x-scroll sm:flex-row flex-nowrap justify-start items-start gap-1 cursor-default">
+        className="sm:h-full pb-4 flex flex-col sm:overflow-x-scroll sm:flex-row flex-nowrap justify-start items-start gap-1 cursor-default">
       <Droppable
           droppableId="all-card-lists"
-        direction={isPhone ? 'vertical' : 'horizontal'}
+          direction={isPhone ? 'vertical' : 'horizontal'}
           type="cardList"
       >
         {provided => (
             <div
               onMouseMove={handleMouseMove}
-              className="sm:pl-2 w-full sm:w-auto sm:h-full flex flex-col sm:flex-row flex-nowrap justify-start items-start gap-1"
+              className="sm:pl-2 w-full sm:w-auto flex flex-col sm:flex-row flex-nowrap justify-start items-start gap-1"
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
@@ -114,12 +113,12 @@ export const ListWrapper = ({ board }) => {
           onClick={() => setNewListModalIsOpen(true)}
           className={
             `
-          py-3 px-2 my-2 mx-auto sm:ml-0 sm:mr-2 w-11/12 sm:w-72
-          flex-shrink-0
+            py-3 px-2 my-2 mx-auto sm:ml-0 sm:mr-2 w-11/12 sm:w-72
+            flex-shrink-0
           bg-white bg-opacity-20 hover:bg-opacity-30
-          duration-200
-          rounded flex flex-col
-          select-none
+            duration-200
+            rounded flex flex-col
+            select-none
           `
           }>
           <span className={
