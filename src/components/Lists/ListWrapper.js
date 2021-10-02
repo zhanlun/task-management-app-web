@@ -34,10 +34,7 @@ export const ListWrapper = ({ board }) => {
     })
 
     socket.on('card_list:update', cl => {
-      const updatedCardList = cardLists[cl.id]
-      if (updatedCardList && cl.last_update_date !== updatedCardList.last_update_date) {
-        dispatch(cardListUpdated(cl))
-      }
+      dispatch(cardListUpdated(cl))
     })
 
     socket.on('card:update', c => {
