@@ -3,9 +3,10 @@ import { Dialog } from '@headlessui/react'
 import { TextInput } from '../Layout/TextInput'
 import { Button } from '../Layout/Button'
 import { useDispatch } from 'react-redux'
-import { createBoard, updateBoard } from '../../actions/boards'
 import { useHistory } from 'react-router'
 import { Modal } from '../Layout/Modal'
+import boardsApi from '../../api/boards'
+import { boardCreated, boardUpdated } from '../../reducers/boards'
 
 export const NewBoard = ({ board, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
@@ -25,14 +26,19 @@ export const NewBoard = ({ board, isOpen, setIsOpen }) => {
     setTitle('')
 
     if (!board) {
-      const { payload } = await dispatch(createBoard({
-        title
-      }))
-      history.push(`/boards/${payload.id}`)
+      const newBoard = {
+        title,
+      }
+      const { data: createdBoard } = await boardsApi.createBoard(newBoard)
+      dispatch(boardCreated(createdBoard))
+      history.push(`/boards/${createdBoard.id}`)
     } else {
-      dispatch(updateBoard(board.id, {
-        title
-      }))
+      const updatedBoard = {
+        ...board,
+        title,
+      }
+      boardsApi.updateBoard(updatedBoard.id, updatedBoard)
+      dispatch(boardUpdated(updatedBoard))
     }
   }
 

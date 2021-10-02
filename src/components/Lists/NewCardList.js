@@ -2,11 +2,13 @@ import { Dialog } from '@headlessui/react'
 import React, { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
-import { getBoards } from '../../actions/boards'
-import { createCardListByBoard, updateCardList } from '../../actions/cardLists'
 import { Button } from '../Layout/Button'
 import { Modal } from '../Layout/Modal'
 import { TextInput } from '../Layout/TextInput'
+import { cardListCreated, cardListUpdated } from '../../reducers/cardLists'
+import { boardUpdated } from '../../reducers/boards'
+import boardsApi from '../../api/boards'
+import cardListsApi from '../../api/cardLists'
 
 export const NewCardList = ({ cardList, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
@@ -27,16 +29,21 @@ export const NewCardList = ({ cardList, isOpen, setIsOpen }) => {
     setIsOpen(false)
     setTitle('')
     if (cardList) {
-      await dispatch(updateCardList(cardList.id, {
-        title,
-        board_id: cardList.board_id,
-      }))
+      const updatedCardList = {
+        ...cardList,
+        title
+      }
+      cardListsApi.updateCardList(cardList.id, updatedCardList)
+      dispatch(cardListUpdated(updatedCardList))
     } else {
-      await dispatch(createCardListByBoard(boardId, {
-        title,
-      }))
+      const newCardList = {
+        title
+      }
+      const { data } = await cardListsApi.createCardListsByBoardId(boardId, newCardList)
+      dispatch(cardListCreated(data))
+      const { data: updatedBoard } = await boardsApi.getBoardById(boardId)
+      dispatch(boardUpdated(updatedBoard))
     }
-    dispatch(getBoards())
   }
 
   useEffect(() => {

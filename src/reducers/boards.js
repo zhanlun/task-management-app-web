@@ -1,19 +1,27 @@
-import { CREATE, DELETE, GET_ALL, UPDATE, UPDATE_CHILD_ID_ORDER } from "../constants/actionType/boards"
+import { createSlice } from "@reduxjs/toolkit"
 
-const boardsReducer = (boards = [], action) => {
-  switch (action.type) {
-    case GET_ALL:
+const boardsSlice = createSlice({
+  name: 'boards',
+  initialState: [],
+  reducers: {
+    boardsFetched(state, action) {
       return action.payload
-    case CREATE:
-      return [...boards, action.payload]
-    case UPDATE:
-    case UPDATE_CHILD_ID_ORDER:
-      return boards.map(board => board.id === action.payload.id ? action.payload : board)
-    case DELETE:
-      return boards.filter(board => board.id !== action.payload)
-
-    default:
-      return boards
+    },
+    boardCreated(state, action) {
+      state.push(action.payload)
+    },
+    boardUpdated(state, action) {
+      // return [...state.filter((board) => board.id !== action.payload.id), action.payload]
+      const board = state.find(board => board.id === action.payload.id)
+      board.title = action.payload.title
+      board.card_list_ids_order = action.payload.card_list_ids_order
+      board.last_update_date = action.payload.last_update_date
+    },
+    boardDeleted(state, action) {
+      return state.filter((board) => board.id !== action.payload)
+    },
   }
-}
-export default boardsReducer
+})
+
+export const { boardsFetched, boardCreated, boardDeleted, boardUpdated } = boardsSlice.actions
+export default boardsSlice.reducer
