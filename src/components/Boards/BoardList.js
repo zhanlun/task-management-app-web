@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBoards } from "../../actions/boards";
+import boardsApi from '../../api/boards';
+import { boardsFetched } from '../../reducers/boards';
 import { Board } from "./Board";
 
 export const BoardList = () => {
   const boards = useSelector(state => state.boards)
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(getBoards())
+  const fetchBoards = useCallback(async () => {
+    const { data: fetchedBoards } = await boardsApi.getAllBoards()
+    dispatch(boardsFetched(fetchedBoards))
   }, [dispatch])
+
+  useEffect(() => {
+    fetchBoards()
+  }, [fetchBoards])
 
   return (
     <div className="max-w-5xl mt-6 mx-auto px-16 pb-12">

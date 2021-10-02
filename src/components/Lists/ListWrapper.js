@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { CardList } from './CardList';
 import { useMediaQuery } from 'react-responsive';
 import { NewCardList } from './NewCardList';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateCardListIdOrder } from '../../actions/boards';
-import { updateCardIdOrder } from '../../actions/cardLists';
 import ScrollContainer from 'react-indiana-drag-scroll'
-import { updateCard } from '../../actions/cards';
+import boardsApi from '../../api/boards';
+import { boardUpdated } from '../../reducers/boards';
+import { cardListCreated, cardListDeleted, cardListUpdated } from '../../reducers/cardLists';
+import cardListsApi from '../../api/cardLists';
+import cardsApi from '../../api/cards';
+import { cardCreated, cardUpdated } from '../../reducers/cards';
+import { io } from 'socket.io-client'
+import { rootApiUrl } from '../../api';
+const socket = io(rootApiUrl)
 
 export const ListWrapper = ({ board }) => {
   const dispatch = useDispatch()
@@ -17,6 +23,72 @@ export const ListWrapper = ({ board }) => {
   const cardLists = useSelector(state => state.cardLists)
   const cards = useSelector(state => state.cards)
   const cardListOrder = boardState.card_list_ids_order
+
+  useEffect(() => {
+    socket.emit('enter-board', board.id)
+
+    socket.on('board:update', b => {
+      if (b.last_update_date !== board.last_update_date) {
+        dispatch(boardUpdated(b))
+      }
+    })
+
+    socket.on('card_list:update', cl => {
+      const updatedCardList = cardLists[cl.id]
+      if (updatedCardList && cl.last_update_date !== updatedCardList.last_update_date) {
+        dispatch(cardListUpdated(cl))
+      }
+    })
+
+    socket.on('card:update', c => {
+      dispatch(cardUpdated(c))
+    })
+
+    socket.on('card_list:create', (cl) => {
+      const createdCardList = cardLists[cl.id]
+      if (!createdCardList) {
+        dispatch(cardListCreated(cl))
+        boardsApi.getBoardById(board.id)
+          .then(({ data }) => {
+            dispatch(boardUpdated(data))
+          }).catch(error => {
+            console.log(error)
+          })
+      }
+    })
+
+    socket.on('card_list:delete', (id) => {
+      const deletedCardList = cardLists[id]
+      if (deletedCardList) {
+        dispatch(cardListDeleted(id))
+      }
+    })
+
+    socket.on('card:create', (c) => {
+      const createdCard = cards[c.id]
+      if (!createdCard) {
+        dispatch(cardCreated(c))
+        cardListsApi.getCardListById(c.card_list_id)
+          .then(({ data }) => {
+            dispatch(cardListUpdated(data))
+          }).catch(error => {
+            console.log(error)
+          })
+      }
+    })
+
+    return () => {
+      socket.off('board:update')
+      socket.off('card_list:update')
+      socket.off('card_list:create')
+      socket.off('card_list:delete')
+      socket.off('card:update')
+      socket.off('card:create')
+      socket.off('card:delete')
+      socket.emit('leave-board', board.id)
+    }
+    // eslint-disable-next-line
+  }, [board.id])
 
   const onDragEnd = ({ destination, source, draggableId, type }) => {
     setHorizontalScrollable(true)
@@ -37,7 +109,12 @@ export const ListWrapper = ({ board }) => {
       newCardListOrder.splice(source.index, 1);
       newCardListOrder.splice(destination.index, 0, draggableId);
 
-      dispatch(updateCardListIdOrder(board, newCardListOrder))
+      const updatedBoard = {
+        ...board,
+        card_list_ids_order: newCardListOrder,
+      }
+      boardsApi.updateBoard(board.id, updatedBoard)
+      dispatch(boardUpdated(updatedBoard))
       return;
     }
 
@@ -48,23 +125,41 @@ export const ListWrapper = ({ board }) => {
       const newCardIds = [...home.card_ids_order]
       newCardIds.splice(source.index, 1);
       newCardIds.splice(destination.index, 0, draggableId);
-      dispatch(updateCardIdOrder(home, newCardIds))
+
+      const updatedCardList = {
+        ...home,
+        card_ids_order: newCardIds,
+      }
+      cardListsApi.updateCardList(updatedCardList.id, updatedCardList)
+      dispatch(cardListUpdated(updatedCardList))
       return;
     }
 
     const homeCardIds = [...home.card_ids_order]
     homeCardIds.splice(source.index, 1);
-    dispatch(updateCardIdOrder(home, homeCardIds))
+    const updatedHomeCardList = {
+      ...home,
+      card_ids_order: homeCardIds,
+    }
+    cardListsApi.updateCardList(updatedHomeCardList.id, updatedHomeCardList)
+    dispatch(cardListUpdated(updatedHomeCardList))
 
     const foreignCardIds = [...foreign.card_ids_order]
     foreignCardIds.splice(destination.index, 0, draggableId);
-    dispatch(updateCardIdOrder(foreign, foreignCardIds))
+    const updatedForeignCardList = {
+      ...foreign,
+      card_ids_order: foreignCardIds,
+    }
+    cardListsApi.updateCardList(updatedForeignCardList.id, updatedForeignCardList)
+    dispatch(cardListUpdated(updatedForeignCardList))
 
-    dispatch(updateCard(draggableId, {
+
+    const updatedCard = {
       ...cards[draggableId],
       card_list_id: foreign.id,
     }
-    ))
+    cardsApi.updateCard(updatedCard.id, updatedCard)
+    dispatch(cardUpdated(updatedCard))
     return
   };
 

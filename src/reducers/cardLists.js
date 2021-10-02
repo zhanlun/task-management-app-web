@@ -1,19 +1,23 @@
-import { CREATE_BY_BOARD, DELETE, GET_ALL_BY_BOARD, UPDATE, UPDATE_CHILD_ID_ORDER } from "../constants/actionType/cardLists"
+import { createSlice } from "@reduxjs/toolkit"
 
-const cardListsReducer = (cardLists = {}, action) => {
-  switch (action.type) {
-    case GET_ALL_BY_BOARD:
+const cardListsSlice = createSlice({
+  name: 'cardLists',
+  initialState: {},
+  reducers: {
+    cardListsFetched(state, action) {
       return action.payload
-    case CREATE_BY_BOARD:
-    case UPDATE:
-    case UPDATE_CHILD_ID_ORDER:
-      return { ...cardLists, [action.payload.id]: action.payload }
-    case DELETE:
-      const { [action.payload]: _, ...newState } = cardLists
-      return newState
-
-    default:
-      return cardLists
+    },
+    cardListCreated(state, action) {
+      state[action.payload.id] = action.payload
+    },
+    cardListUpdated(state, action) {
+      state[action.payload.id] = action.payload
+    },
+    cardListDeleted(state, action) {
+      delete state[action.payload]
+    },
   }
-}
-export default cardListsReducer
+})
+
+export const { cardListsFetched, cardListCreated, cardListDeleted, cardListUpdated } = cardListsSlice.actions
+export default cardListsSlice.reducer

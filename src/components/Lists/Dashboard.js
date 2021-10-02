@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
-import { getBoards } from '../../actions/boards'
-import { getCardListsByBoard } from '../../actions/cardLists'
-import { getCardsByBoard } from '../../actions/cards'
+import boardsApi from '../../api/boards'
+import cardListsApi from '../../api/cardLists'
+import cardsApi from '../../api/cards'
+import { boardsFetched } from '../../reducers/boards'
+import { cardListsFetched } from '../../reducers/cardLists'
+import { cardsFetched } from '../../reducers/cards'
+import { arrayToMapReduceFunction } from '../../util/arrayToDictionary'
 import { NewBoard } from '../Boards/NewBoard'
 import { ListWrapper } from './ListWrapper'
 
@@ -17,22 +21,30 @@ export const Dashboard = () => {
   const [isReady, setIsReady] = useState(false)
 
   const fetchRelatedData = useCallback(async () => {
-    await dispatch(getCardListsByBoard(boardId))
-    await dispatch(getCardsByBoard(boardId))
+    const { data: fetchedCardLists } = await cardListsApi.getAllCardListsByBoardId(boardId)
+    const { data: fetchedCards } = await cardsApi.getAllCardsByBoardId(boardId)
+
+    const fetchedCardListsDict = fetchedCardLists.reduce(arrayToMapReduceFunction, {})
+    const fetchedCardsDict = fetchedCards.reduce(arrayToMapReduceFunction, {})
+    dispatch(cardListsFetched(fetchedCardListsDict))
+    dispatch(cardsFetched(fetchedCardsDict))
     setIsReady(true)
   }, [boardId, dispatch])
 
-  useEffect(() => {
-    if (boards.length === 0) {
-      dispatch(getBoards())
-    }
-  })
+  const fetchBoards = useCallback(async () => {
+    const { data: fetchedBoards } = await boardsApi.getAllBoards()
+    dispatch(boardsFetched(fetchedBoards))
+  }, [dispatch])
 
   useEffect(() => {
+    if (boards.length === 0) {
+      fetchBoards()
+    }
+
     if (board) {
       fetchRelatedData()
     }
-  }, [board, fetchRelatedData])
+  }, [board, fetchRelatedData, fetchBoards, boards.length])
 
   return (
     <div className="w-full mt-2 h-full flex flex-col mx-auto">

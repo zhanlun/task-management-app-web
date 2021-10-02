@@ -2,16 +2,18 @@ import { Fragment } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Button } from '../Layout/Button'
 import { useDispatch } from 'react-redux'
-import { deleteBoard } from '../../actions/boards'
 import { ExclamationCircleIcon } from '@heroicons/react/outline'
 import { Modal } from '../Layout/Modal'
+import boardsApi from '../../api/boards'
+import { boardDeleted } from '../../reducers/boards'
 
 export const DeleteBoard = ({ board, isOpen, setIsOpen }) => {
   const dispatch = useDispatch()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    dispatch(deleteBoard(board.id))
+    boardsApi.deleteBoard(board.id)
+    dispatch(boardDeleted(board.id))
   }
 
   return (

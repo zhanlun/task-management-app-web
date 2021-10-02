@@ -3,8 +3,10 @@ import { ExclamationCircleIcon } from '@heroicons/react/outline'
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { updateCardIdOrder } from '../../actions/cardLists'
-import { deleteCard } from '../../actions/cards'
+import cardListsApi from '../../api/cardLists'
+import cardsApi from '../../api/cards'
+import { cardListUpdated } from '../../reducers/cardLists'
+import { cardDeleted } from '../../reducers/cards'
 import { Button } from '../Layout/Button'
 import { Modal } from '../Layout/Modal'
 
@@ -15,8 +17,14 @@ export const DeleteCard = ({ card, isOpen, setIsOpen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const newCardOrder = cardList.card_ids_order.filter(s => s !== card.id)
-    await dispatch(updateCardIdOrder(cardList, newCardOrder))
-    await dispatch(deleteCard(card.id))
+    const updatedCardList = {
+      ...cardList,
+      card_ids_order: newCardOrder,
+    }
+    cardListsApi.updateCardList(cardList.id, updatedCardList)
+    dispatch(cardListUpdated(updatedCardList))
+    cardsApi.deleteCard(card.id)
+    dispatch(cardDeleted(card.id))
   }
 
   return (
