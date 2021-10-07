@@ -67,7 +67,7 @@ export const Dashboard = () => {
     }
   }, [board, fetchRelatedData, fetchBoards, boards.length])
 
-  const isSameUser = user && user.id && user.id === board.created_by
+  const isSameUser = user && user.id && board && user.id === board.created_by
 
   return (
     <div className="w-full mt-2 h-full flex flex-col mx-auto">
