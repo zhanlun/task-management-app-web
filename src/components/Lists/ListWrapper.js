@@ -110,7 +110,7 @@ export const ListWrapper = ({ board }) => {
         ...board,
         card_list_ids_order: newCardListOrder,
       }
-      boardsApi.updateBoard(board.id, updatedBoard)
+      boardsApi.updateCardListIdOrder(board.id, newCardListOrder)
       dispatch(boardUpdated(updatedBoard))
       return;
     }

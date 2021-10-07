@@ -31,10 +31,30 @@ export const Dashboard = () => {
     setIsReady(true)
   }, [boardId, dispatch])
 
-  const fetchBoards = useCallback(async () => {
-    const { data: fetchedBoards } = await boardsApi.getAllBoards()
-    dispatch(boardsFetched(fetchedBoards))
-  }, [dispatch])
+  const fetchBoards = useCallback(() => {
+    boardsApi.getAllBoards()
+      .then((response) => {
+        const fetchedBoards = response.data
+        dispatch(boardsFetched(fetchedBoards))
+      })
+      .catch(error => {
+        if (error.response) {
+          console.log(error.response)
+          if (error.response.status === 401) {
+            boardsApi.getBoardById(boardId)
+              .then(response => {
+                const fetchedBoard = response.data
+                dispatch(boardsFetched([fetchedBoard]))
+              })
+          }
+        } else if (error.request) {
+          console.log(error.request)
+        } else {
+          console.log(error.response)
+        }
+      })
+
+  }, [dispatch, boardId])
 
   useEffect(() => {
     if (boards.length === 0) {
