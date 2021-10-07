@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
-import { rootApiUrl } from '../../api'
 import authApi from '../../api/auth'
 import { userLogin } from '../../reducers/user'
 

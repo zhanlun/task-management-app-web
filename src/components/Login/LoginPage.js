@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import authApi from '../../api/auth'
-import user, { userLogin } from '../../reducers/user'
+import { userLogin } from '../../reducers/user'
 
 export const LoginPage = () => {
   const [username, setUsername] = useState('')

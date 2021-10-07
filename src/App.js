@@ -11,14 +11,12 @@ import { LoginPage } from "./components/Login/LoginPage";
 import { SignUpPage } from "./components/Login/SignUpPage";
 import { PrivateRoute } from "./components/Route/PrivateRoute";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import authApi from "./api/auth";
 import { userLogin } from "./reducers/user";
-import { useHistory } from 'react-router-dom'
 
 function App() {
   const dispatch = useDispatch()
-  const history = useHistory()
   const [userLoaded, setUserLoaded] = useState(false)
 
   useEffect(() => {
@@ -33,7 +31,7 @@ function App() {
       .finally(() => {
         setUserLoaded(true)
       })
-  }, [])
+  }, [dispatch])
 
   return (
     userLoaded &&
