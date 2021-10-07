@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
+import authApi from '../../api/auth'
+import user, { userLogin } from '../../reducers/user'
 
 export const LoginPage = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
   const history = useHistory()
+
+  useEffect(() => {
+    if (user.accessToken) {
+      history.push('/')
+    }
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -22,14 +33,26 @@ export const LoginPage = () => {
     }
 
     // api request
-    const authSuccess = username === 'demo' && password === 'reactdemo'
-    if (!authSuccess) {
-      setError('Username or password is incorrect, please try again')
-      return
-    }
-    setError(null)
-    // redirect
-    history.push('/boards')
+    authApi.loginUser({
+      username,
+      password,
+    }).then((response) => {
+      const { data } = response
+      setError(null)
+
+      dispatch(userLogin({ ...user, username, accessToken: data.accessToken }))
+      // redirect
+      history.push('/')
+
+    }).catch((error) => {
+      if (error.response) {
+        setError(error.response.data)
+      } else if (error.request) {
+        console.log(error.request)
+      } else {
+        console.log(error.response)
+      }
+    })
   }
 
   return (
