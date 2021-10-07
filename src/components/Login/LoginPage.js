@@ -40,7 +40,7 @@ export const LoginPage = () => {
       const { data } = response
       setError(null)
 
-      dispatch(userLogin({ ...user, username, accessToken: data.accessToken }))
+      dispatch(userLogin({ ...data }))
       // redirect
       history.push('/')
 

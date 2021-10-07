@@ -14,6 +14,7 @@ import { ListWrapper } from './ListWrapper'
 export const Dashboard = () => {
   const { boardId } = useParams()
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
   const boards = useSelector(state => state.boards)
   const board = boards.find(board => board.id.toString() === boardId)
 
@@ -66,6 +67,8 @@ export const Dashboard = () => {
     }
   }, [board, fetchRelatedData, fetchBoards, boards.length])
 
+  const isSameUser = user && user.id && user.id === board.created_by
+
   return (
     <div className="w-full mt-2 h-full flex flex-col mx-auto">
       <div className="w-full py-1 px-0 h-full mx-auto flex-grow">
@@ -76,9 +79,15 @@ export const Dashboard = () => {
                 type="button"
                 onClick={(e) => {
                   e.preventDefault()
+
+                  if (!isSameUser)
+                    return
+
                   setEditOpen(true)
                 }}
-                className={"px-2 py-1 mx-4 my-2 sm:mx-2 rounded bg-yellow-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 "}
+                className={`px-2 py-1 mx-4 my-2 sm:mx-2 rounded bg-yellow-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 
+                ${isSameUser ? 'cursor-pointer' : 'cursor-text'}
+                `}
               >
                 <span className="text-xl">
                   {board.title}
