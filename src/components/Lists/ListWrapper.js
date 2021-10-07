@@ -13,12 +13,14 @@ import cardsApi from '../../api/cards';
 import { cardCreated, cardUpdated } from '../../reducers/cards';
 import { io } from 'socket.io-client'
 import { rootApiUrl } from '../../api';
+import { CardListReadonly } from './CardListReadonly';
 const socket = io(rootApiUrl)
 
 export const ListWrapper = ({ board, isDisabled }) => {
   const dispatch = useDispatch()
   const [newListModalIsOpen, setNewListModalIsOpen] = useState(false)
   const [horizontalScrollable, setHorizontalScrollable] = useState(true)
+  const user = useSelector(state => state.user)
   const boardState = useSelector(state => state.boards.find(b => b.id === board.id))
   const cardLists = useSelector(state => state.cardLists)
   const cards = useSelector(state => state.cards)
@@ -174,8 +176,29 @@ export const ListWrapper = ({ board, isDisabled }) => {
   }
 
   return (
-    isDisabled ?
-      <p className="p-6 bg-white">is disabled</p> :
+    isDisabled && board.created_by !== user.id ?
+      <ScrollContainer
+        horizontal={horizontalScrollable}
+        vertical={isPhone}
+        hideScrollbars={false}
+        className="sm:h-full pb-4 flex flex-col sm:overflow-x-scroll sm:flex-row flex-nowrap justify-start items-start gap-1 cursor-default">
+        <div
+          className="sm:pl-2 w-full sm:w-auto flex flex-col sm:flex-row flex-nowrap justify-start items-start gap-1"
+        >
+          {cardListOrder.map((cardListId, index) => {
+            const cardList = cardLists[cardListId];
+            return (
+              <InnerListReadonly
+                key={cardList.id}
+                cardList={cardList}
+                cardMap={cards}
+                index={index}
+              />
+            );
+          })}
+        </div>
+      </ScrollContainer>
+      :
     <DragDropContext onDragEnd={onDragEnd} onDragStart={() => setHorizontalScrollable(false)}>
       <ScrollContainer
         horizontal={horizontalScrollable}
@@ -240,4 +263,9 @@ export const ListWrapper = ({ board, isDisabled }) => {
 const InnerList = ({ cardList, cardMap, index }) => {
   const cards = cardList.card_ids_order.map(cardId => cardMap[cardId]);
   return <CardList cardList={cardList} cards={cards} index={index} />;
+}
+
+const InnerListReadonly = ({ cardList, cardMap, index }) => {
+  const cards = cardList.card_ids_order.map(cardId => cardMap[cardId]);
+  return <CardListReadonly cardList={cardList} cards={cards} index={index} />;
 }
