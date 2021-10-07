@@ -4,12 +4,13 @@ import { useParams } from 'react-router'
 import boardsApi from '../../api/boards'
 import cardListsApi from '../../api/cardLists'
 import cardsApi from '../../api/cards'
-import { boardsFetched } from '../../reducers/boards'
+import { boardsFetched, boardUpdated } from '../../reducers/boards'
 import { cardListsFetched } from '../../reducers/cardLists'
 import { cardsFetched } from '../../reducers/cards'
 import { arrayToMapReduceFunction } from '../../util/arrayToDictionary'
 import { NewBoard } from '../Boards/NewBoard'
 import { ListWrapper } from './ListWrapper'
+import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/outline'
 
 export const Dashboard = () => {
   const { boardId } = useParams()
@@ -56,28 +57,67 @@ export const Dashboard = () => {
         {
           board && (
             <div className="h-full">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
+              <div className="flex justify-start">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
 
-                  if (!isSameUser)
-                    return
+                    if (!isSameUser)
+                      return
 
-                  setEditOpen(true)
-                }}
-                className={`px-2 py-1 mx-4 my-2 sm:mx-2 rounded bg-yellow-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 
-                ${isSameUser ? 'cursor-pointer' : 'cursor-text'}
-                `}
-              >
-                <span className="text-xl">
-                  {board.title}
-                </span>
-              </button>
+                    setEditOpen(true)
+                  }}
+                  className={`px-2 py-1 mx-4 my-2 sm:mx-2 rounded bg-yellow-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 
+                  ${isSameUser ? 'cursor-pointer' : 'cursor-text'}
+                  `}
+                >
+                  <span className="text-xl">
+                    {board.title}
+                  </span>
+                </button>
+                {
+                  isSameUser &&
+                  <>
+                    <span className="mx-3 my-2 border-l-2 border-gray-400 border-opacity-50"></span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        const updatedBoard = {
+                          ...board,
+                          disable_public_edit: !board.disable_public_edit,
+                        }
+                        boardsApi.updateBoard(board.id, updatedBoard)
+                        dispatch(boardUpdated(updatedBoard))
+                      }}
+                      className={`flex px-2 py-1 mx-4 my-2 sm:mx-2 rounded bg-purple-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 
+                    ${isSameUser ? 'cursor-pointer' : 'cursor-text'}
+                    `}
+                    >
+                      {
+                        board.disable_public_edit ?
+                          <LockClosedIcon className="w-4 h-4 mr-2 mt-1" /> :
+                          <LockOpenIcon className="w-4 h-4 mr-2 mt-1" />
+                      }
+                      <span className="text-base">
+                        {
+                          board.disable_public_edit ?
+                            'Enable edit by public' :
+                            'Disable edit by public'
+                        }
+                      </span>
+                    </button>
+                  </>
+                }
+              </div>
               {/* put lists and cards */}
               {
-                isReady &&
-                <ListWrapper board={board} />
+                !isReady ?
+                  null :
+                  board.disable_public_edit ?
+                    <p className="p-12 bg-white">disabled: TODO</p> :
+                    <ListWrapper board={board} />
               }
             </div>
           )

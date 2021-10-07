@@ -16,6 +16,7 @@ const boardsSlice = createSlice({
       board.title = action.payload.title
       board.card_list_ids_order = action.payload.card_list_ids_order
       board.last_update_date = action.payload.last_update_date
+      board.disable_public_edit = action.payload.disable_public_edit
     },
     boardDeleted(state, action) {
       return state.filter((board) => board.id !== action.payload)
