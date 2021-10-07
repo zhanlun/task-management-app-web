@@ -32,24 +32,21 @@ export const Dashboard = () => {
     setIsReady(true)
   }, [boardId, dispatch])
 
-  const fetchBoards = useCallback(() => {
+  const fetchBoard = useCallback(() => {
     boardsApi.getBoardById(boardId)
       .then(response => {
         const fetchedBoard = response.data
         dispatch(boardsFetched([fetchedBoard]))
+        fetchRelatedData()
       })
       .catch(error => {
         console.log(error)
       })
-  }, [dispatch, boardId])
+  }, [dispatch, fetchRelatedData, boardId])
 
   useEffect(() => {
-    fetchBoards()
-
-    if (board) {
-      fetchRelatedData()
-    }
-  }, [board, boardId, fetchRelatedData, fetchBoards])
+    fetchBoard()
+  }, [boardId, fetchBoard])
 
   const isSameUser = user && user.id && board && user.id === board.created_by
 
