@@ -15,7 +15,7 @@ import { io } from 'socket.io-client'
 import { rootApiUrl } from '../../api';
 const socket = io(rootApiUrl)
 
-export const ListWrapper = ({ board }) => {
+export const ListWrapper = ({ board, isDisabled }) => {
   const dispatch = useDispatch()
   const [newListModalIsOpen, setNewListModalIsOpen] = useState(false)
   const [horizontalScrollable, setHorizontalScrollable] = useState(true)
@@ -174,6 +174,8 @@ export const ListWrapper = ({ board }) => {
   }
 
   return (
+    isDisabled ?
+      <p className="p-6 bg-white">is disabled</p> :
     <DragDropContext onDragEnd={onDragEnd} onDragStart={() => setHorizontalScrollable(false)}>
       <ScrollContainer
         horizontal={horizontalScrollable}

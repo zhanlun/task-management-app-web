@@ -89,7 +89,9 @@ export const Dashboard = () => {
                           disable_public_edit: !board.disable_public_edit,
                         }
                         boardsApi.updateBoard(board.id, updatedBoard)
-                        dispatch(boardUpdated(updatedBoard))
+                          .then(response => {
+                            dispatch(boardUpdated(response.data))
+                          })
                       }}
                       className={`flex px-2 py-1 mx-4 my-2 sm:mx-2 rounded bg-purple-500 bg-opacity-80  text-white font-semibold hover:bg-opacity-100 
                     ${isSameUser ? 'cursor-pointer' : 'cursor-text'}
@@ -113,11 +115,8 @@ export const Dashboard = () => {
               </div>
               {/* put lists and cards */}
               {
-                !isReady ?
-                  null :
-                  board.disable_public_edit ?
-                    <p className="p-12 bg-white">disabled: TODO</p> :
-                    <ListWrapper board={board} />
+                isReady &&
+                <ListWrapper board={board} isDisabled={board.disable_public_edit} />
               }
             </div>
           )
