@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import authApi from "./api/auth";
 import { userLogin } from "./reducers/user";
+import { NotFound } from "./components/Layout/NotFound";
 
 function App() {
   const dispatch = useDispatch()
@@ -50,6 +51,9 @@ function App() {
           </Route>
           <Route path="/boards/:boardId">
             <Dashboard />
+          </Route>
+          <Route path="*">
+            <NotFound />
           </Route>
         </Switch>
       </div>

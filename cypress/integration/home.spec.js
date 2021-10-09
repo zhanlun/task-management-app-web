@@ -52,4 +52,13 @@ describe('The Home Page', () => {
       expect(localStorage.getItem('accessToken')).to.includes('')
     })
   })
+
+  it('will see 404 page if enter invalid url', function () {
+    const wrongUrl = '/somerandomurl'
+    cy.visit(wrongUrl)
+    cy.contains('Page not found')
+
+    cy.get('[data-cy="back-home-page-link"]').click()
+    cy.location('pathname').should('not.eq', wrongUrl)
+  })
 })
