@@ -11,7 +11,6 @@ const boardsSlice = createSlice({
       state.push(action.payload)
     },
     boardUpdated(state, action) {
-      // return [...state.filter((board) => board.id !== action.payload.id), action.payload]
       const board = state.find(board => board.id === action.payload.id)
       board.title = action.payload.title
       board.card_list_ids_order = action.payload.card_list_ids_order
