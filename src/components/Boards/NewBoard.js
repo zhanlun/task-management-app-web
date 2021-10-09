@@ -64,7 +64,7 @@ export const NewBoard = ({ board, isOpen, setIsOpen }) => {
         {/* <Dialog.Description></Dialog.Description> */}
 
         <form onSubmit={handleSubmit}>
-          <TextInput placeholder="Board title" value={title} onChange={handleChange} />
+          <TextInput placeholder="Board title" name="title" value={title} onChange={handleChange} />
 
           <Button type="submit"
             className="bg-indigo-500">

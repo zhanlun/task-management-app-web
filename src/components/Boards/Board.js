@@ -26,6 +26,7 @@ export const Board = ({ board }) => {
 
   return (
     <div
+      data-cy="board-single"
       onClick={handleRedirect}
       onContextMenu={handleRightClick}
       className={"bg-yellow-500 shadow-lg rounded-lg pt-6  pr-0 pb-0 text-center hover:bg-opacity-80 duration-100 select-none"}>
@@ -46,6 +47,7 @@ const BoardDropDownMenu = ({ board, menuRef }) => {
     <div className="w-full text-right "
     >
       <Menu as="div" className="relative inline-block text-left"
+        data-cy="board-single-menu"
       >
         <Menu.Button
           ref={menuRef}
