@@ -11,8 +11,10 @@ import { arrayToMapReduceFunction } from '../../util/arrayToDictionary'
 import { NewBoard } from '../Boards/NewBoard'
 import { ListWrapper } from './ListWrapper'
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/outline'
+import { NotFound } from '../Layout/NotFound'
 
 export const Dashboard = () => {
+  const [boardNotFound, setBoardNotFound] = useState(false)
   const { boardId } = useParams()
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
@@ -42,6 +44,9 @@ export const Dashboard = () => {
       })
       .catch(error => {
         console.log(error)
+        if (error.response && error.response.status === 404) {
+          setBoardNotFound(true)
+        }
       })
   }, [dispatch, fetchRelatedData, boardId])
 
@@ -50,6 +55,10 @@ export const Dashboard = () => {
   }, [boardId, fetchBoard])
 
   const isSameUser = user && user.id && board && user.id === board.created_by
+
+  if (boardNotFound) {
+    return <NotFound />
+  }
 
   return (
     <div className="w-full mt-2 h-full flex flex-col mx-auto">
