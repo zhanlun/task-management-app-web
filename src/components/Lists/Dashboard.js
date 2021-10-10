@@ -66,7 +66,7 @@ export const Dashboard = () => {
         {
           board && (
             <div className="h-full">
-              <div className="flex justify-start">
+              <div className="flex justify-start flex-wrap">
                 <button
                   type="button"
                   onClick={(e) => {
