@@ -23,6 +23,20 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
   <title>Task Management App</title>
+  <script>
+    function findIE() {
+      var ua = window.navigator.userAgent;
+      var msie = ua.indexOf("MSIE ");
+
+      if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+        document.write("<h3 style=\"font-family: Arial;\">This site does not support Internet Explorer.<br> Please visit this site using other browsers. " +
+          "<A HREF='microsoft-edge:" + window.location.href + "'>Click here to launch the app in MS Edge browser</A>" +
+          "</h3>");
+      }
+      return false;
+    }
+    findIE()
+  </script>
 </head>
 
 <body class="bg-sprinkle-pattern bg-center font-nunito h-full">
