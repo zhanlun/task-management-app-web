@@ -51,14 +51,7 @@ export const Card = ({ card, index }) => {
           <p className="flex-grow">
             {card.content}
           </p>
-          <CardMenu menuRef={menuRef} card={card} showMenu={showMenu || snapshot.isDragging} />
-
-          {/* <button className={`p-1 text-sm text-gray-500 hover:text-gray-600 bg-gray-300 bg-opacity-0 hover:bg-opacity-30 rounded-md focus:outline-none
-          ${showMenu ? 'visible' : 'invisible'}`}>
-            <PencilAltIcon className={`w-4 h-4 
-            
-          `} />
-          </button> */}
+          <CardMenu menuRef={menuRef} card={card} showMenu={showMenu} />
         </div>
       )}
     </Draggable>
