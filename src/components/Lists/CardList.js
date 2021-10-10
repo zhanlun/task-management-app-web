@@ -25,7 +25,7 @@ export const CardList = ({ cardList, index, cards }) => {
           `}
           {...provided.draggableProps} ref={provided.innerRef}>
           <div
-            className="flex justify-between">
+            className="flex justify-between z-10">
             <h3
               className="flex-grow font-bold text-gray-700 tracking-wide text-sm mt-1 ml-3"
               {...provided.dragHandleProps}>
@@ -33,7 +33,7 @@ export const CardList = ({ cardList, index, cards }) => {
             </h3>
             <CardListMenu cardList={cardList} />
           </div>
-          <div>
+          <div className="z-0">
             <Droppable droppableId={cardList.id} type="card">
               {(provided) => (
                 <div

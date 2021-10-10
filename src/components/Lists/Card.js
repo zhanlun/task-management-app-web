@@ -77,7 +77,7 @@ const CardMenu = ({ card, menuRef, showMenu }) => {
       >
         <Menu.Button
           ref={menuRef}
-          className={`inline-flex justify-center w-full p-2 text-sm font-medium text-gray-500 hover:text-gray-600 bg-gray-300 bg-opacity-0 hover:bg-opacity-30 rounded-md focus:outline-none
+          className={`z-10 inline-flex justify-center w-full p-2 text-sm font-medium text-gray-500 hover:text-gray-600 bg-gray-300 bg-opacity-0 hover:bg-opacity-30 rounded-md focus:outline-none
           ${showMenu ? 'visible' : 'invisible'}
           `}>
           <PencilAltIcon className="w-4 h-4" />
@@ -90,7 +90,7 @@ const CardMenu = ({ card, menuRef, showMenu }) => {
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-95 opacity-0"
         >
-          <Menu.Items className="absolute right-0 w-56 mt-1 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="z-20 absolute right-0 w-56 mt-1 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="px-1 py-1 ">
               <Menu.Item>
                 {({ active }) => (
