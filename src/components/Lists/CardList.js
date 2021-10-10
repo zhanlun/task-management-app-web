@@ -33,7 +33,7 @@ export const CardList = ({ cardList, index, cards }) => {
             </h3>
             <CardListMenu cardList={cardList} />
           </div>
-          <div className="z-0">
+          <div className="">
             <Droppable droppableId={cardList.id} type="card">
               {(provided) => (
                 <div
