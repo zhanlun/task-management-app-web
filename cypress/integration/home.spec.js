@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-const serverUrl = 'http://localhost:5000'
+const serverUrl = Cypress.config().serverUrl.development
 
 describe('The Home Page', () => {
   beforeEach(() => {

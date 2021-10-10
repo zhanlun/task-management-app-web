@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-const serverUrl = 'http://localhost:5000'
+const serverUrl = Cypress.config().serverUrl.development
 import { userLogin } from '../../src/reducers/user'
 const dispatch = action => cy.window().its('__store__').invoke('dispatch', action)
 
